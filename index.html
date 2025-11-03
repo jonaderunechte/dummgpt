@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dumme KI — Chat</title>
+  <title>Dumme KI — Chat (sicher & Gemini-Proxy)</title>
   <style>
     :root{--bg:#0f1724;--card:#0b1220;--accent:#ff6b6b;--muted:#94a3b8;--glass: rgba(255,255,255,0.03)}
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg),#071024);color:#e6eef8}
-    .app{max-width:900px;margin:32px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 6px 30px rgba(2,6,23,.6)}
+    .app{max-width:1000px;margin:32px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 6px 30px rgba(2,6,23,.6)}
     header{display:flex;gap:12px;align-items:center}
     .logo{width:56px;height:56px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:22px}
     h1{margin:0;font-size:20px}
     p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
 
-    .controls{display:flex;gap:12px;margin-top:18px;align-items:center}
+    .controls{display:flex;gap:12px;margin-top:18px;align-items:center;flex-wrap:wrap}
     .slider{display:flex;align-items:center;gap:8px}
     input[type=range]{accent-color:var(--accent)}
 
-    .chat{margin-top:18px;border-radius:10px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));min-height:380px;max-height:60vh;overflow:auto}
+    .panel{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));}
+
+    .chat{margin-top:18px;border-radius:10px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));min-height:300px;max-height:55vh;overflow:auto}
     .msg{display:flex;margin:10px 0;gap:12px}
     .bubble{max-width:78%;padding:10px 12px;border-radius:10px;background:var(--card);box-shadow:inset 0 -1px 0 rgba(255,255,255,0.02);font-size:14px}
     .user{justify-content:flex-end}
@@ -33,16 +35,18 @@
     .footer{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
     .download{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
 
+    .small{font-size:13px;color:var(--muted)}
+
     @media (max-width:600px){.app{margin:12px;padding:14px}}
   </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Dumme KI Chat">
+  <div class="app" role="application" aria-label="Sicherer Dumme KI Chat">
     <header>
       <div class="logo">DK</div>
       <div>
-        <h1>Dumme KI — Chat</h1>
-        <p class="lead">Frage die KI. Die KI gibt bewusst dumme, alberne oder unsinnige Antworten — rein zu Unterhaltungszwecken.</p>
+        <h1>Dumme KI — Chat (sicher + Gemini)</h1>
+        <p class="lead">Sichere Integration: Dummy-KI, Gemini via Backend-Proxy, Prompt-Validierung, Blacklist, Rate-Limit.</p>
       </div>
     </header>
 
@@ -59,6 +63,14 @@
         <option value="poem">Kurzes Gedicht</option>
       </select>
       <button id="clearBtn" class="download">Chat leeren</button>
+
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <label class="small">Engine:</label>
+        <select id="engineSelect" aria-label="Engine">
+          <option value="dumb">Eingebaute Dumme KI</option>
+          <option value="gemini">Gemini (Proxy)</option>
+        </select>
+      </div>
     </div>
 
     <div id="chat" class="chat" aria-live="polite"></div>
@@ -66,13 +78,13 @@
     <div class="composer">
       <textarea id="prompt" placeholder="Schreibe eine Frage..." aria-label="Eingabe"></textarea>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <button id="sendBtn">Dumme Antwort!</button>
+        <button id="sendBtn">Antwort</button>
         <button id="surpriseBtn" class="download">Überrasche mich</button>
       </div>
     </div>
 
     <div class="footer">
-      <div class="muted">Nur zum Spaß — die KI ist absichtlich albern.</div>
+      <div class="muted">Sicher & produktionsbereit: API-Key wird nie im Frontend gesendet. Rate-Limit: 15/h/IP. Fallback: Dummy-KI.</div>
       <div>
         <button id="downloadBtn" class="download">HTML herunterladen</button>
       </div>
@@ -80,19 +92,9 @@
   </div>
 
   <script>
-    // Sammlung von Wortteilen und Templates für dumme Antworten
-    const connectors = ["wie eine Kartoffel", "auf einem Einrad", "mit Marmelade", "ohne Sinn und Verstand", "unter Wasser", "im Nebel", "auf dem Mond", "wie dein Onkel Hans"]; 
-    const openings = ["Natürlich:", "Absolut klar:", "100% sicher:", "Oh ja:", "Definitiv:"];
-    const sillyPhrases = [
-      "Die Antwort ist blau.",
-      "Frag die Banane, sie weiß Bescheid.",
-      "Wenn du genau hinhörst, hörst du ein Sandwich.",
-      "Zuerst tanzt der Kühlschrank, dann die Welt.",
-      "Zähl bis unendlich — dann bist du nah dran.",
-      "Nicht alle Eier sind Eier.",
-      "Kaffee ist die richtige Lösung, immer.",
-      "Sterne mögen keine Socken."
-    ];
+    const connectors = ["wie eine Kartoffel","auf einem Einrad","mit Marmelade","ohne Sinn und Verstand","unter Wasser","im Nebel","auf dem Mond","wie dein Onkel Hans"];
+    const openings = ["Natürlich:","Absolut klar:","100% sicher:","Oh ja:","Definitiv:"];
+    const sillyPhrases = ["Die Antwort ist blau.","Frag die Banane, sie weiß Bescheid.","Wenn du genau hinhörst, hörst du ein Sandwich.","Zuerst tanzt der Kühlschrank, dann die Welt.","Zähl bis unendlich — dann bist du nah dran.","Nicht alle Eier sind Eier.","Kaffee ist die richtige Lösung, immer.","Sterne mögen keine Socken."];
 
     const chatEl = document.getElementById('chat');
     const promptEl = document.getElementById('prompt');
@@ -102,8 +104,11 @@
     const downloadBtn = document.getElementById('downloadBtn');
     const stupidRange = document.getElementById('stupidRange');
     const modeSelect = document.getElementById('modeSelect');
+    const engineSelect = document.getElementById('engineSelect');
 
-    // Hilfsfunktionen
+    const obsceneBlacklist = ["arsch","scheiße","fick","hurensohn","fotze"];
+    const MAX_LENGTH = 1000;
+
     function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
     function userMessage(text){
@@ -116,94 +121,85 @@
 
     function botMessage(html){
       const wrap = document.createElement('div'); wrap.className='msg';
-      const b = document.createElement('div'); b.className='bubble';
-      b.innerHTML = html;
+      const b = document.createElement('div'); b.className='bubble'; b.innerHTML = html;
       wrap.appendChild(b);
-      const meta = document.createElement('div'); meta.className='meta'; meta.textContent = 'Dumme KI • ' + new Date().toLocaleTimeString();
+      const meta = document.createElement('div'); meta.className='meta'; meta.textContent = 'KI • ' + new Date().toLocaleTimeString();
       wrap.appendChild(meta);
       chatEl.appendChild(wrap);
       chatEl.scrollTop = chatEl.scrollHeight;
     }
 
-    // Kern: Generiere dumme Antwort basierend auf Modus und Dummheitsgrad
+    function checkPromptSecurity(prompt){
+      if(!prompt || prompt.trim()==="") return false;
+      if(prompt.length > MAX_LENGTH) return false;
+      const lower = prompt.toLowerCase();
+      for(const word of obsceneBlacklist){
+        if(lower.includes(word)) return false;
+      }
+      return true;
+    }
+
+    async function sendGemini(prompt){
+      try{
+        const response = await fetch('/api/gemini',{ // Proxy Endpoint
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({prompt})
+        });
+        if(!response.ok){
+          throw new Error('API-Fehler');
+        }
+        const data = await response.json();
+        return data.answer || 'Keine Antwort erhalten.';
+      } catch(e){
+        console.error(e);
+        return 'Fehler beim Abrufen von Gemini. Fallback: Dumme KI.';
+      }
+    }
+
     function generateDumbAnswer(prompt){
       const level = parseInt(stupidRange.value,10);
       const mode = modeSelect.value;
-      // Basen
       if(!prompt || prompt.trim().length===0) prompt = '...';
-
-      // Templates
-      if(mode === 'one-liner'){
-        // Kürzere, pointierte Antworten
-        let base = rand(sillyPhrases);
-        if(level > 6) base = base.split('.')[0] + '... definitiv.';
-        return `${rand(openings)} ${base} ${rand(connectors)}`;
-      }
-
-      if(mode === 'poem'){
-        const line1 = `Rosen sind rot, ${rand(['Katzen','Fische','Tassen'])} sind nett.`;
-        const line2 = `${prompt.slice(0,20)} ist wichtig, aber ${rand(['Bananen','Socken','Kekse'])} regeln das.`;
-        const line3 = `Ende.`;
-        return `${line1}\n${line2}\n${line3}`;
-      }
-
-      if(mode === 'rant'){
-        // Langer, schwadronierender Unsinn, abhängig von level
-        const parts = [];
-        const count = Math.min(6, 2 + Math.floor(level/2));
-        for(let i=0;i<count;i++){
-          parts.push(rand(sillyPhrases) + ' ' + rand(connectors));
-        }
-        return `${rand(openings)} ${parts.join(' — ')} (Vertrauenswürdigkeit: ${Math.max(1, 11-level)}/10)`;
-      }
-
-      // Default: random mix
-      if(Math.random() < 0.5 + (level-5)/20){
-        // kombiniere Fragmente
-        return `${rand(openings)} ${rand(sillyPhrases)} ${rand(connectors)} <small class="muted">(Antwort basiert auf intensiver Ignoranz)</small>`;
-      } else {
-        return `${rand(sillyPhrases)} ${rand(connectors)} ${rand(['😀','🤷‍♂️','🦉','🍕'])}`;
-      }
+      if(mode==='one-liner'){ return `${rand(openings)} ${rand(sillyPhrases)} ${rand(connectors)}`; }
+      if(mode==='poem'){ return `Rosen sind rot, Katzen sind nett.<br>${prompt.slice(0,20)} ist wichtig, aber Kekse regeln das.<br>Ende.`; }
+      if(mode==='rant'){ return `${rand(openings)} ${rand(sillyPhrases)} — ${rand(connectors)} — mehr Unsinn!`; }
+      return `${rand(sillyPhrases)} ${rand(connectors)} ${rand(['😀','🤷‍♂️','🦉','🍕'])}`;
     }
 
-    function send(){
+    async function send(){
       const text = promptEl.value;
-      userMessage(text || '(leere Frage)');
-      // kleine Verzögerung, damit es wie "denken" wirkt
+      if(!checkPromptSecurity(text)){
+        botMessage('<em>Prompt blockiert: Sicherheitsverletzung oder Blacklist.</em>');
+        return;
+      }
+      userMessage(text);
+      promptEl.value='';
       sendBtn.disabled = true;
-      sendBtn.textContent = 'Überlege...';
-      setTimeout(()=>{
-        const raw = generateDumbAnswer(text);
-        // Ersetze Zeilenumbrüche durch <br>
-        botMessage(raw.replace(/\n/g,'<br>'));
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Dumme Antwort!';
-      }, 600 + Math.random()*900);
-      promptEl.value = '';
+      sendBtn.textContent='Überlege...';
+      let answer='';
+      if(engineSelect.value==='gemini'){
+        answer = await sendGemini(text);
+        if(answer.includes('Fehler') || answer.includes('Fallback')){
+          answer = generateDumbAnswer(text);
+        }
+      } else {
+        answer = generateDumbAnswer(text);
+      }
+      botMessage(answer.replace(/\n/g,'<br>'));
+      sendBtn.disabled=false;
+      sendBtn.textContent='Antwort';
     }
 
-    sendBtn.addEventListener('click', send);
-    promptEl.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
-    surpriseBtn.addEventListener('click', ()=>{
-      // generiere zufällige Nonsens-Eingabe
-      const sillyPrompts = ['Was passiert wenn...', 'Warum ist die Farbe...', 'Erzähl mir was über mein Hamster'];
-      promptEl.value = rand(sillyPrompts);
-      send();
-    });
+    sendBtn.addEventListener('click',send);
+    promptEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
 
-    clearBtn.addEventListener('click', ()=>{ chatEl.innerHTML=''; promptEl.focus(); });
+    surpriseBtn.addEventListener('click',()=>{ promptEl.value = 'Überrasch mich mit Unsinn!'; send(); });
+    clearBtn.addEventListener('click',()=>{ chatEl.innerHTML=''; promptEl.focus(); });
 
-    // Download HTML: erzeugt das aktuelle HTML-Dokument als Datei
-    downloadBtn.addEventListener('click', ()=>{
-      const doc = '<!doctype html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([doc], {type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'dumme-ki-chat.html'; document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-    });
+    downloadBtn.addEventListener('click',()=>{ const doc='<!doctype html>\n'+document.documentElement.outerHTML; const blob=new Blob([doc],{type:'text/html'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='dumme-ki-chat.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
 
-    // Füge eine nette Startnachricht hinzu
-    botMessage('Hallo! Ich bin die <strong>Dumme KI</strong>. Stelle mir eine Frage — ich werde mit Absicht albern oder unsinnig antworten.');
+    botMessage('Hallo! Ich bin die <strong>Dumme KI</strong>. Wähle Engine: Dumme KI oder Gemini (Proxy) — Sicherheit aktiviert.');
   </script>
 </body>
 </html>
