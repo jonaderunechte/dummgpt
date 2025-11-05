@@ -221,10 +221,10 @@ if (/wer ist jona/i.test(lq)) {
             }
             
 if (/Jona ein Hurensohn|und Jona/i.test(lq)) {
-                return "wo denkst du hin? Natürlich nicht...";
+                return ["wo denkst du hin? Natürlich nicht...","Nein","Hell Na", "ne nur Jannis"][Math.floor(Math.random() * 3)];
             }
 
-            if (/Vincete dumm/i.test(lq)) {
+            if (/Vicente dumm/i.test(lq)) {
                 return "Ja würd schon sagen... 🤷‍♂️";
             }
 
