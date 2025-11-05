@@ -1,533 +1,347 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>KI Assistentin — Erweitert</title>
-
-    <!-- Styles (leicht angepasst, dark mode) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Assistentin</title>
     <style>
-        :root{
+        :root {
             --bg: #fff;
-            --bg2: #f7f9fc;
+            --bg2: #f8f9fa;
             --grad1: #667eea;
             --grad2: #764ba2;
-            --text: #0f1724;
-            --accent: #667eea;
+            --text: #212529;
+            --border: #e9ecef;
+            --user: #667eea;
             --ai: #f1f3f5;
-            --border: #e6eef8;
         }
-        [data-theme="dark"]{
-            --bg:#0b1220;
-            --bg2:#0f1724;
-            --text:#e6eef8;
-            --accent:#4c51bf;
-            --ai:#1a2430;
-            --border:#22303f;
+        [data-theme="dark"] {
+            --bg: #1a1a1a;
+            --bg2: #2d2d2d;
+            --text: #e2e8f0;
+            --border: #4a5568;
+            --user: #4c51bf;
+            --ai: #2d3748;
         }
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: linear-gradient(135deg,var(--grad1),var(--grad2));
-            min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        .container{
-            width:100%;max-width:1100px;border-radius:14px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.35);
-            background:linear-gradient(180deg,var(--bg2),var(--bg));
+        .container {
+            background: var(--bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
         }
-        .header{
-            display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:linear-gradient(90deg,var(--grad1),var(--grad2));color:white;
+        .header {
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .header h1{font-size:20px;letter-spacing:.2px}
-        .header p{font-size:12px;opacity:.95;margin-top:4px}
-        .main{
-            display:grid;grid-template-columns:360px 1fr;gap:16px;padding:18px;
+        .header h1 { font-size: 24px; }
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
         }
-
-        /* left pane */
-        .controls{background:var(--bg);border-radius:10px;padding:12px;border:1px solid var(--border);}
-        .controls h3{font-size:15px;margin-bottom:8px;color:var(--text)}
-        .control-row{display:flex;gap:8px;margin-bottom:8px}
-        .control-row input[type="text"], .control-row select, textarea{
-            width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text)
+        .chat {
+            height: 450px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--bg);
         }
-        button{background:linear-gradient(90deg,var(--grad1),var(--grad2));color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
-        .small{padding:6px 8px;font-size:13px}
-        .note{font-size:12px;color:gray;margin-top:6px}
-
-        /* right pane chat */
-        .chat-wrap{display:flex;flex-direction:column;gap:12px}
-        .chat{height:560px;overflow:auto;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,.02));border:1px solid var(--border)}
-        .msg{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
-        .msg.ai .bubble{background:var(--ai);color:var(--text)}
-        .msg.user{flex-direction:row-reverse}
-        .bubble{padding:12px;border-radius:12px;max-width:78%;line-height:1.45;border:1px solid rgba(0,0,0,0.04)}
-        .meta{font-size:12px;color:gray;margin-bottom:6px}
-        .footer{display:flex;gap:8px;align-items:center}
-        .input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text)}
-        .tools{display:flex;gap:8px;align-items:center}
-
-        pre.code{background:#0f1724;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px}
-        .info{background:rgba(100,100,255,0.06);padding:8px;border-radius:8px;border-left:4px solid var(--accent);margin-bottom:8px}
-
-        .small-muted{font-size:12px;color:gray}
-        .kbd{background:#111827;color:#fff;padding:3px 6px;border-radius:6px;font-size:12px}
-        .flex{display:flex;gap:8px}
-        .panel{background:transparent;padding:8px;border-radius:8px}
+        .msg {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg.user { flex-direction: row-reverse; }
+        .msg-content {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            line-height: 1.4;
+            color: var(--text);
+            font-size: 14px;
+        }
+        .msg.user .msg-content {
+            background: var(--user);
+            color: white;
+        }
+        .msg.ai .msg-content {
+            background: var(--ai);
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .info {
+            background: var(--bg2);
+            border-left: 3px solid var(--user);
+            padding: 8px;
+            margin: 6px 0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .input-box {
+            display: flex;
+            padding: 15px;
+            gap: 8px;
+            border-top: 2px solid var(--border);
+            background: var(--bg);
+        }
+        #inp {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            background: var(--bg);
+            color: var(--text);
+        }
+        #btn {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
     </style>
-
-    <!-- Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/dist/math.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js"></script>
 </head>
 <body>
-    <div class="container" id="app" data-theme="light">
+    <div class="container">
         <div class="header">
             <div>
-                <h1>🤖 KI Assistentin — Erweitert</h1>
-                <p>Mathe, Grafen, Geschichte, Frageanalyse, Wikipedia → großes Wissen</p>
+                <h1>🤖 KI Assistentin</h1>
+                <p style="font-size: 12px; opacity: 0.9">Intelligente Konversations-KI</p>
             </div>
-            <div style="display:flex;gap:10px;align-items:center">
-                <button id="toggleTheme" class="small">☾ Dark</button>
-                <button id="clearBtn" class="small">Verlauf löschen</button>
-            </div>
+            <button class="theme-btn" id="theme">🌙 Dark</button>
         </div>
-
-        <div class="main">
-            <!-- Left controls -->
-            <div class="controls">
-                <h3>Schnellsteuerung</h3>
-
-                <div class="control-row">
-                    <input id="queryInput" type="text" placeholder="Schreib: 'Was ist Quantenphysik?' oder 'zeichne sin(x) von -10 bis 10'">
-                </div>
-
-                <div class="control-row">
-                    <button id="sendBtn">Senden</button>
-                    <button id="askWiki" class="small">Wikipedia</button>
-                    <button id="drawBtn" class="small">Graf zeichnen</button>
-                </div>
-
-                <div style="margin-top:10px">
-                    <label class="small-muted">Plot Ausdruck (z. B. sin(x) oder x^2 + 3*x)</label>
-                    <input id="plotExpr" type="text" placeholder="sin(x)" style="margin-top:6px">
-                    <div style="display:flex;gap:8px;margin-top:6px">
-                        <input id="plotFrom" type="text" placeholder="-10" style="width:80px">
-                        <input id="plotTo" type="text" placeholder="10" style="width:80px">
-                        <input id="plotStep" type="text" placeholder="0.05" style="width:80px">
-                    </div>
-                </div>
-
-                <div style="margin-top:12px">
-                    <h3 style="font-size:14px;margin-bottom:6px">Einstellungen & Tools</h3>
-                    <div class="small-muted">Mathe-Engine: <span id="mathVer"></span></div>
-                    <div style="margin-top:6px" class="small-muted">Wikipedia: de/en (fetch)</div>
-                </div>
-
-                <div style="margin-top:12px" class="note small-muted">
-                    Tipp: Frage komplex (zwei Aufgaben) — die KI zerlegt Prompts & führt Teilaufgaben nacheinander aus.
-                </div>
-            </div>
-
-            <!-- Right chat & outputs -->
-            <div class="chat-wrap">
-                <div class="chat" id="chat">
-                    <div class="msg ai">
-                        <div class="bubble">
-                            <div class="meta">KI</div>
-                            Hallo! 👋 Ich bin deine erweiterte KI — ich kann komplexe Mathematik lösen, Grafen zeichnen, geschichtliches Wissen aus Wikipedia abrufen und Prompts analysieren. Frag los!
-                        </div>
-                    </div>
-                </div>
-
-                <div class="footer">
-                    <input id="textIn" class="input" placeholder="Schreib etwas..." />
-                    <div class="tools">
-                        <button id="sendBtn2">Senden</button>
-                    </div>
+        <div class="chat" id="chat">
+            <div class="msg ai">
+                <div class="msg-content">
+                    Hallo! 👋 Ich kann mit dir sprechen, Code schreiben und Fragen beantworten. Wie kann ich dir helfen?
                 </div>
             </div>
         </div>
-
-        <!-- hidden area for plots -->
-        <div id="plots" style="display:none"></div>
+        <div class="input-box">
+            <input type="text" id="inp" placeholder="Schreib mir..." />
+            <button id="btn">Senden</button>
+        </div>
     </div>
-
-    <!-- Script: gesamte Logik -->
     <script>
-    (function(){
-        // Element-Referenzen
-        const app = document.getElementById('app');
         const chat = document.getElementById('chat');
-        const input = document.getElementById('textIn');
-        const queryInput = document.getElementById('queryInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const sendBtn2 = document.getElementById('sendBtn2');
-        const askWiki = document.getElementById('askWiki');
-        const drawBtn = document.getElementById('drawBtn');
-        const plotExpr = document.getElementById('plotExpr');
-        const plotFrom = document.getElementById('plotFrom');
-        const plotTo = document.getElementById('plotTo');
-        const plotStep = document.getElementById('plotStep');
-        const mathVer = document.getElementById('mathVer');
-        const plots = document.getElementById('plots');
-        const toggleTheme = document.getElementById('toggleTheme');
-        const clearBtn = document.getElementById('clearBtn');
-
-        mathVer.textContent = math.version; // math.js version
-
+        const inp = document.getElementById('inp');
+        const btn = document.getElementById('btn');
+        const theme = document.getElementById('theme');
         let dark = false;
-        toggleTheme.onclick = () => {
+        let ctx = [];
+        
+        theme.onclick = () => {
             dark = !dark;
-            app.setAttribute('data-theme', dark ? 'dark' : 'light');
-            toggleTheme.textContent = dark ? '☼ Light' : '☾ Dark';
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
         };
 
-        clearBtn.onclick = () => {
-            chat.innerHTML = '';
-            addMessage('ai', 'Verlauf gelöscht.');
-        };
-
-        // Conversation context (zur Ja/Nein-Interpretation & Prompt-Analyse)
-        const ctx = {
-            history: [],          // alle messages {who:'user'|'ai', text}
-            lastQuestion: null,   // letzter interrogativer Sätze vom Benutzer
-        };
-
-        function addMessage(who, html, rawText){
+        function add(txt, user, html) {
             const m = document.createElement('div');
-            m.className = 'msg ' + (who === 'user' ? 'user' : 'ai');
-            const b = document.createElement('div');
-            b.className = 'bubble';
-            if (html && html.startsWith('<')) b.innerHTML = html;
-            else b.textContent = html;
-            const meta = document.createElement('div');
-            meta.className = 'meta';
-            meta.textContent = (who === 'user' ? 'Du' : 'KI');
-            b.prepend(meta);
-            m.appendChild(b);
+            m.className = `msg ${user ? 'user' : 'ai'}`;
+            const c = document.createElement('div');
+            c.className = 'msg-content';
+            if (html) c.innerHTML = txt;
+            else c.textContent = txt;
+            m.appendChild(c);
             chat.appendChild(m);
             chat.scrollTop = chat.scrollHeight;
-            if (who === 'user') {
-                ctx.history.push({who:'user', text: rawText || html});
-                // mark last question if it ends with ? or is interrogative
-                if ((rawText || html || '').trim().endsWith('?') || /\b(wie|wer|was|warum|wo|wann|welche|ist|sind)\b/i.test(rawText || html)) {
-                    ctx.lastQuestion = rawText || html;
-                }
-            } else {
-                ctx.history.push({who:'ai', text: html});
-            }
         }
 
-        // Utilities
-        function isMathRequest(text){
-            // heuristics for being a math request
-            return /\b(integral|ableit|ableiten|differenti|sqrt|sin|cos|tan|log|ln|summe|∑|\^|sqrt|\b\d+\s*[\+\-\*\/]\s*\d+|\bsolve\b)/i.test(text);
-        }
-        function isPlotRequest(text){
-            return /\b(zeichn|plot|graf|graph|plotte|grafik|zeichne)\b/i.test(text);
-        }
-        function isWikiRequest(text){
-            return /\b(wikipedia|wer ist|was ist|biografie|geburt|gestorben|geschichte|jahr|epoch|jahrhundert)\b/i.test(text);
-        }
-        function isYN(text){
-            return /^\s*(ja|nein|yes|no)\s*$/i.test(text.trim());
-        }
-
-        // Numerische Integration (Simpson)
-        function numericIntegrate(f, a, b, n=1000){
-            if(n % 2 === 1) n++;
-            const h = (b - a) / n;
-            let s = f(a) + f(b);
-            for (let i = 1; i < n; i++){
-                const x = a + i*h;
-                s += (i % 2 === 0) ? 2 * f(x) : 4 * f(x);
-            }
-            return (h / 3) * s;
-        }
-
-        // Implementiere Kernantwort-Logik
-        async function processPrompt(raw){
-            const msg = raw.trim();
-            if (!msg) return;
-
-            addMessage('user', msg, msg);
-
-            // Promptanalyse: Mehrfachaufgaben erkennen (z. B. "Erkläre X und zeichne Y")
-            const tasks = splitTasks(msg);
-
-            // Ergebnisse sammeln (führt mehrere Tasks nacheinander aus)
-            let results = [];
-            for (const t of tasks){
-                const r = await handleSingleTask(t);
-                results.push(r);
-            }
-
-            // kombiniere Antworten
-            const final = results.join('\n\n---\n\n');
-            addMessage('ai', final);
-        }
-
-        // Zerlege in Teilaufgaben: einfache heuristik basierend auf "und", ";" oder ", dann"
-        function splitTasks(text){
-            // Wenn "und" verbindet Verb-Phrasen, splitte vorsichtig
-            // Wir versuchen, zusammengesetzte Anfragen zu trennen: "Erkläre X und zeichne Y" -> ["Erkläre X","zeichne Y"]
-            const separators = [' ; ', ';', ' dann ', ' & ', ' und ', ' sowie '];
-            for (const sep of separators){
-                // vermeide splitten, wenn "und" in einem Namen vorkommt? heuristisch
-                if (text.toLowerCase().includes(sep.trim())) {
-                    return text.split(new RegExp(sep,'i')).map(s => s.trim()).filter(Boolean);
-                }
-            }
-            return [text];
-        }
-
-        // Einzelne Task behandeln
-        async function handleSingleTask(text){
-            const l = text.toLowerCase();
-
-            // Ja/Nein Interpretation: wenn Nutzer nur "ja"/"nein" sagt, versuche Kontexthandling
-            if (isYN(text)){
-                if (/^ja/i.test(text)) {
-                    if (ctx.lastQuestion) {
-                        return `Du hast mit "Ja" geantwortet — Bezug: "${ctx.lastQuestion}". Soll ich jetzt weitermachen?`;
-                    }
-                    return 'Du hast "Ja" gesagt. Worauf beziehst du dich?';
-                } else {
-                    return 'Du hast "Nein" gesagt. Möchtest du etwas Anderes versuchen?';
-                }
-            }
-
-            // Mathematische Aufgaben
-            if (isMathRequest(text)){
-                try {
-                    // Versuch: math.evaluate (numerisch), plus Ableitung wenn "ableiten" oder "ableitung" vorkommt
-                    if (/ableit|ableitung|differenti/i.test(l)){
-                        const m = text.match(/(?:ableit(?:en|ung)?\s+von\s+(.+))|(?:derivative\s+of\s+(.+))/i);
-                        const expr = (m && (m[1] || m[2])) ? (m[1] || m[2]) : text.replace(/.*ableit.*/i,'').trim();
-                        const node = math.parse(expr);
-                        const der = math.derivative(node, 'x').toString(); // symbolische ableitung (math.js)
-                        return `<div class="info">Ableitung von <strong>${expr}</strong></div><pre class="code">${der}</pre>`;
-                    }
-
-                    if (/integral|integrieren|fläche unter/i.test(l)){
-                        // Try parse "integral of sin(x) from 0 to pi"
-                        const m = text.match(/(?:integral|integrieren).+of\s+(.+)\s+from\s+([-\d.+]+)\s+to\s+([-\d.+]+)/i)
-                               || text.match(/(?:integral|integrieren)\s+von\s+(.+)\s+von\s+([-\d.+]+)\s+bis\s+([-\d.+]+)/i);
-                        if (m){
-                            const expr = m[1].trim();
-                            const a = parseFloat(m[2]);
-                            const b = parseFloat(m[3]);
-                            const f = (x) => {
-                                try { return Number(math.evaluate(expr, {x})); }
-                                catch { return NaN; }
-                            };
-                            const val = numericIntegrate(f, a, b, 2000);
-                            return `<div class="info">Numerisches Integral</div>Integral von <strong>${expr}</strong> von ${a} bis ${b} ≈ <strong>${val}</strong>`;
-                        } else {
-                            return 'Bitte gib das Integral so an: "Integral von <expr> von <a> bis <b>" oder "integral of <expr> from <a> to <b>"';
-                        }
-                    }
-
-                    // Normales Evaluate - mit vorsichtiger Sanitisierung
-                    let res;
-                    try {
-                        res = math.evaluate(text);
-                        return `<div class="info">Mathematische Auswertung</div><pre class="code">${text} = ${String(res)}</pre>`;
-                    } catch(e){
-                        // eventuell Ausdruck extrahieren, z.B. "Rechne: 2+2"
-                        const m = text.match(/([0-9\.\s\+\-\*\/\^\(\)x]+)/i);
-                        if (m){
-                            res = math.evaluate(m[1]);
-                            return `<div class="info">Mathematische Auswertung</div><pre class="code">${m[1]} = ${String(res)}</pre>`;
-                        }
-                        throw e;
-                    }
-                } catch (err){
-                    console.error(err);
-                    return 'Konnte die mathematische Aufgabe nicht lösen. Versuche präziser zu formulieren (z.B. "Ableitung von sin(x)" oder "Integral von x^2 von 0 bis 3").';
-                }
-            }
-
-            // Plot / Graphen
-            if (isPlotRequest(text) || /plot|zeichne|graf/i.test(l)){
-                // Versuche den Ausdruck zu extrahieren
-                // Beispiele erwartet: "zeichne sin(x) von -10 bis 10" oder "plot x^2"
-                let expr = text.replace(/\b(zeichne|plot|graf|graph|plotte|zeichne bitte|zeichne)\b/gi, '').trim();
-                let from = parseFloat(plotFrom.value || -10);
-                let to = parseFloat(plotTo.value || 10);
-                let step = parseFloat(plotStep.value || 0.05);
-                // detect inline bounds
-                const m = text.match(/von\s+([-\d.+]+)\s+bis\s+([-\d.+]+)/i) || text.match(/from\s+([-\d.+]+)\s+to\s+([-\d.+]+)/i);
-                if (m){
-                    from = parseFloat(m[1]); to = parseFloat(m[2]);
-                }
-                if (!expr) expr = (plotExpr.value || 'sin(x)');
-
-                // prepare curve
-                const xs = [];
-                const ys = [];
-                const n = Math.max(2, Math.floor((to - from) / (step || 0.05)));
-                for (let i = 0; i <= n; i++){
-                    const x = from + (to - from) * (i / n);
-                    let y;
-                    try {
-                        y = Number(math.evaluate(expr, {x}));
-                        if (!isFinite(y)) y = null;
-                    } catch(e) { y = null; }
-                    xs.push(x); ys.push(y);
-                }
-
-                // create plot container
-                const id = 'plot_' + Math.random().toString(36).slice(2,9);
-                const holder = document.createElement('div');
-                holder.style.width = '100%';
-                holder.style.height = '360px';
-                holder.id = id;
-                holder.className = 'panel';
-                // append visible in chat
-                addMessage('ai', `<div class="info">Graf für: <strong>${expr}</strong> (${from} bis ${to})</div><div id="${id}" style="width:100%;height:360px"></div>`);
-                // render using Plotly after short delay (DOM braucht Zeit)
-                setTimeout(() => {
-                    const trace = { x: xs, y: ys, mode: 'lines', type: 'scatter', name: expr };
-                    const layout = {margin:{t:30},title:`Graf: ${expr}`};
-                    Plotly.newPlot(id, [trace], layout, {responsive:true});
-                }, 100);
-                return `Ich habe den Graphen für "${expr}" erstellt.`;
-            }
-
-            // Wikipedia / Geschichtliches Wissen: Suche & Kurzfassung
-            if (isWikiRequest(text) || /^wer ist|was ist|biografie|erkläre/i.test(l)){
-                // clean query
-                const q = text.replace(/\b(was ist|wer ist|erkläre|geschichte von|biografie|wikipedia|beschreibe)\b/gi, '').trim() || text;
-                // Try German first, then English
-                const wikiDe = await wikiSearchExtract(q, 'de');
-                if (wikiDe) return wikiDe;
-                const wikiEn = await wikiSearchExtract(q, 'en');
-                if (wikiEn) return wikiEn;
-                return 'Ich habe keinen passenden Wikipedia-Eintrag gefunden. Versuche eine präzisere Frage oder einen anderen Begriff.';
-            }
-
-            // Wer/Was/Wie Fragen allgemein
-            if (/^(wer|was|wie|warum|wo|wann|welche)\b/i.test(text)){
-                // Kurzer Wiki-Fallback
-                const q = text;
-                const wiki = await wikiSearchExtract(q, 'de') || await wikiSearchExtract(q, 'en');
-                if (wiki) return wiki;
-                // sonst antwort basierend auf heuristik
-                return 'Gute Frage — ich habe gerade keinen deterministischen Artikel dazu gefunden. Möchtest du, dass ich in Wikipedia suche?';
-            }
-
-            // "Was kannst du?" Handler
-            if (/was kannst du/i.test(text)){
-                return `<div class="info">Fähigkeiten</div>Ich kann:<br>• Komplexe Mathematik (Evaluierung, Ableitung, numerische Integration)🧮<br>• Graphen zeichnen (Plotly)📈<br>• Wikipedia-basierte Fakten & geschichtliche Informationen🏛️<br>• Prompt-Analyse: Aufteilen von Mehrfachanfragen & Ausführen Schritt-für-Schritt🛠️<br>• Ja/Nein-Interpretation im Kontext (Kontext letzter Frage wird benutzt)✔️`;
-            }
-
-            // Default / small talk / fallback
-            if (/hallo|hi|guten/i.test(text)) return 'Hey! Wie kann ich dir helfen? (z.B. "zeichne sin(x) von -5 bis 5" oder "Wer war Napoleon?")';
-            if (/danke|thx/i.test(text)) return 'Gern geschehen! 😊';
-            if (/witz|witzig/i.test(text)) return 'Warum haben die Programmiersprachen nie Zeit? Weil sie immer async sind 😄';
-
-            // Sonstige: versuche Wikipedia als letzte Rettung
-            const wiki = await wikiSearchExtract(text, 'de') || await wikiSearchExtract(text, 'en');
-            if (wiki) return wiki;
-
-            return 'Interessant — ich habe das noch nicht sicher zugeordnet. Versuche "Wikipedia" oder präzisiere die Frage.';
-        }
-
-        // Wikipedia helper: Suche & extrahiere Intro (origin=*)
-        async function wikiSearchExtract(query, lang='de'){
-            if (!query || query.trim().length < 2) return null;
-            const endpoint = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&explaintext=1&origin=*&titles=${encodeURIComponent(query)}&redirects=1`;
-            try {
-                // first try direct titles query (fast)
-                let res = await fetch(endpoint);
-                let obj = await res.json();
-                if (obj && obj.query && obj.query.pages){
-                    const pages = obj.query.pages;
-                    const pageId = Object.keys(pages)[0];
-                    if (pageId && pageId !== "-1"){
-                        const extract = pages[pageId].extract || '';
-                        const title = pages[pageId].title || query;
-                        if (extract && extract.length > 20) {
-                            return `<div class="info">Wikipedia (${lang.toUpperCase()}): <strong>${title}</strong></div>${sanitizeHTML(extract)}`;
-                        }
-                    }
-                }
-                // If direct failed, try search API
-                const searchEp = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
-                res = await fetch(searchEp);
-                obj = await res.json();
-                if (obj && obj.query && obj.query.search && obj.query.search.length){
-                    const top = obj.query.search[0].title;
-                    // fetch extract for top result
-                    const extractEp = `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=1&explaintext=1&origin=*&titles=${encodeURIComponent(top)}&redirects=1`;
-                    const r2 = await fetch(extractEp);
-                    const o2 = await r2.json();
-                    const pages2 = o2.query.pages;
-                    const pid = Object.keys(pages2)[0];
-                    if (pid && pid !== "-1"){
-                        const extract = pages2[pid].extract || '';
-                        const title = pages2[pid].title || top;
-                        if (extract && extract.length > 20) {
-                            return `<div class="info">Wikipedia (${lang.toUpperCase()}): <strong>${title}</strong></div>${sanitizeHTML(extract)}`;
-                        }
-                    }
-                }
-                return null;
-            } catch(e){
-                console.error('Wiki error', e);
-                return null;
-            }
-        }
-
-        // Sicherheit: ganz einfache Sanitisierung von Textblöcken (kein HTML aus Wikipedia reinlassen)
-        function sanitizeHTML(str){
-            // nur einfache Ersetzungen; wir geben plaintext zurück, aber erlauben linebreaks
-            return String(str).replace(/[&<>]/g, function(ch){
-                if (ch === '&') return '&amp;';
-                if (ch === '<') return '&lt;';
-                if (ch === '>') return '&gt;';
-                return ch;
-            }).replace(/\n/g, '<br>');
-        }
-
-        // Event handlers
-        sendBtn.onclick = () => {
-            const q = queryInput.value.trim();
-            if (!q) return;
-            processPrompt(q);
-            queryInput.value = '';
-        };
-        sendBtn2.onclick = () => {
-            const q = input.value.trim();
-            if (!q) return;
-            processPrompt(q);
-            input.value = '';
-        };
-        askWiki.onclick = async () => {
-            const q = queryInput.value.trim() || input.value.trim();
-            if (!q) return;
-            addMessage('user', q, q);
-            const wiki = await wikiSearchExtract(q, 'de') || await wikiSearchExtract(q, 'en');
-            if (wiki) addMessage('ai', wiki);
-            else addMessage('ai', 'Kein Wikipedia-Eintrag gefunden.');
-        };
-        drawBtn.onclick = () => {
-            const expr = plotExpr.value.trim() || queryInput.value.trim() || input.value.trim();
-            if (!expr) return addMessage('ai', 'Bitte gib einen Ausdruck zum Zeichnen ein (z. B. sin(x)).');
-            // Build a plot-task text to reuse logic
-            processPrompt('zeichne ' + expr);
+        const hello = {
+            python: 'print("Hello, World!")',
+            javascript: 'console.log("Hello, World!");',
+            java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
+            cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}',
+            c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
+            csharp: 'using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}',
+            arduino: 'void setup() {\n  Serial.begin(9600);\n  Serial.println("Hello, World!");\n}\n\nvoid loop() {\n}'
         };
 
-        // Enter drücken in input
-        input.addEventListener('keypress', (e)=>{ if (e.key === 'Enter') sendBtn2.click(); });
-        queryInput.addEventListener('keypress', (e)=>{ if (e.key === 'Enter') sendBtn.click(); });
+        const blink = {
+            arduino: 'void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
+            python: 'import RPi.GPIO as GPIO\nimport time\n\nLED = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED, GPIO.OUT)\n\nwhile True:\n    GPIO.output(LED, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(LED, GPIO.LOW)\n    time.sleep(1)'
+        };
 
-        // initial small guide
-        addMessage('ai', 'Tipp: Probiere "zeichne sin(x) von -10 bis 10", "Ableitung von x^3", "Integral von x^2 von 0 bis 3", oder "Wer war Napoleon?"');
+        function respond(msg) {
+            const lq = msg.toLowerCase();
+            ctx.push(msg);
+            
+            if (/^(hi|hallo|hey|guten|servus)\b/i.test(msg)) {
+                return ["Hey! 😊 Wie geht's?", "Hallo! Was kann ich für dich tun?", "Hi! 👋 Schön dich zu sehen!"][Math.floor(Math.random() * 3)];
+            }
+            
+            if (/wie geht|wie läuft/i.test(lq)) {
+                return "Mir geht's super! 😊 Und dir?";
+            }
 
-    })();
+            if (/Jannis ein Hurensohn|jannis dumm/i.test(lq)) {
+                return "Ja natürlich!! 🤓 Das ist doch Grundwissen...";
+            }
+
+if (/wer ist jona/i.test(lq)) {
+                return "Jona ist der Beste!!! 🧏‍♂️🤫 Jona ist am 22.04.2008 in Freiburg geboren und geht aktuell in das Friedrich gymnasium in Freiburg. ";
+            }
+            
+if (/Jona ein Hurensohn|jannis schlau|jona dumm/i.test(lq)) {
+                return ["wo denkst du hin? Natürlich nicht...","Nein","Hell Na", "ne nur Jannis","Hmmm das ist eine sehr gute Frage... NATÜRLICH NICHT!!!!","Wer das erst fragen muss hat ganz andere Probleme"][Math.floor(Math.random() * 6)];
+            }
+
+            if (/Vicente dumm/i.test(lq)) {
+                return "Ja würd schon sagen... 🤷‍♂️";
+            }
+
+
+            if (/^(gut|super|toll|prima)\b/i.test(msg)) {
+                return "Das freut mich! 😊 Was möchtest du heute machen?";
+            }
+
+            if (/schlecht|nicht gut/i.test(lq)) {
+                return "Oh nein! 😔 Möchtest du darüber reden?";
+            }
+            
+            if (/tschüss|bye|ciao/i.test(lq)) {
+                return "Tschüss! 👋 War schön mit dir zu reden!";
+            }
+            
+            if (/danke|thx/i.test(lq)) {
+                return "Gerne! 😊 Brauchst du noch was?";
+            }
+
+            if (/witz|joke/i.test(lq)) {
+                const j = ["Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄",
+                          "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄"];
+                return j[Math.floor(Math.random() * j.length)];
+            }
+
+            if (/hello world/i.test(lq)) {
+                for (let lang in hello) {
+                    if (lq.includes(lang)) {
+                        return `<div class="info">Hello World in ${lang}</div><div class="code">${hello[lang]}</div>`;
+                    }
+                }
+                return 'In welcher Sprache? Python, JavaScript, Java, C++, C, C#, Arduino?';
+            }
+
+            if (/blink/i.test(lq)) {
+                if (lq.includes('arduino')) {
+                    return `<div class="info">Arduino Blink</div><div class="code">${blink.arduino}</div>`;
+                }
+                if (lq.includes('python') || lq.includes('raspberry')) {
+                    return `<div class="info">Raspberry Pi Blink</div><div class="code">${blink.python}</div>`;
+                }
+                return 'Für Arduino oder Raspberry Pi?';
+            }
+            
+            if (/python/i.test(lq)) {
+                if (/machine learning|ml/i.test(lq)) {
+                    return `<div class="info">Python ML</div><div class="code">from sklearn.ensemble import RandomForestClassifier\nimport numpy as np\n\nX = np.random.rand(100, 5)\ny = np.random.randint(0, 2, 100)\n\nmodel = RandomForestClassifier()\nmodel.fit(X, y)\nprint(f"Score: {model.score(X, y)}")</div>`;
+                }
+                return `<div class="code">${hello.python}\n\n# Mehr:\ndef greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("World"))</div>`;
+            }
+            
+            if (/react/i.test(lq)) {
+                return `<div class="info">React App</div><div class="code">import { useState } from 'react';\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    &lt;div&gt;\n      &lt;p&gt;Count: {count}&lt;/p&gt;\n      &lt;button onClick={() => setCount(count + 1)}&gt;\n        +1\n      &lt;/button&gt;\n    &lt;/div&gt;\n  );\n}</div>`;
+            }
+            
+            if (/quanten/i.test(lq)) {
+                return '<div class="info">Quantenphysik</div>Die Quantenphysik beschreibt die Welt auf atomarer Ebene:<br>• Welle-Teilchen-Dualismus<br>• Unschärferelation<br>• Superposition<br>• Verschränkung 🔬';
+            }
+            
+            if (/einstein|relativität/i.test(lq)) {
+                return '<div class="info">Relativitätstheorie</div><strong>Spezielle:</strong> Zeit ist relativ, E=mc²<br><strong>Allgemeine:</strong> Gravitation ist Raumzeit-Krümmung 🌌';
+            }
+
+            if (/klima/i.test(lq)) {
+                return '<div class="info">Klimawandel</div>Ursachen: CO₂, Abholzung<br>Folgen: +1,1°C, Extremwetter<br>Lösungen: Erneuerbare Energien, E-Mobilität 🌍';
+            }
+
+            if (/(\d+)\s*([\+\-\*\/])\s*(\d+)/.test(msg)) {
+                const m = msg.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
+                const a = parseFloat(m[1]), op = m[2], b = parseFloat(m[3]);
+                let r;
+                if (op === '+') r = a + b;
+                else if (op === '-') r = a - b;
+                else if (op === '*') r = a * b;
+                else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler';
+                return `<div class="info">${a} ${op} ${b} = <strong>${r}</strong></div>`;
+            }
+
+            if (/motivat|schwer|aufgeben/i.test(lq)) {
+                return "Du schaffst das! 💪<br>• Jeder Experte war mal Anfänger<br>• Kleine Schritte zählen<br>• Fehler sind Lerngelegenheiten 🌟";
+            }
+
+            if (/traurig|schlecht|down/i.test(lq)) {
+                return "Es tut mir leid! 😔 Ich bin hier für dich. Möchtest du darüber reden?";
+            }
+
+            if (/freue|glücklich/i.test(lq) && !/geht/.test(lq)) {
+                return "Das freut mich für dich! 🎉 Was macht dich glücklich?";
+            }
+
+            if (/programmieren lernen|coden lernen/i.test(lq)) {
+                return '<div class="info">Programmieren lernen</div><strong>Start:</strong> Python 🐍<br><strong>Schritte:</strong><br>1. Grundlagen (Variablen, Schleifen)<br>2. Funktionen & OOP<br>3. Kleine Projekte bauen<br>4. Web oder ML wählen 💻';
+            }
+
+            if (/wie lerne ich/i.test(lq)) {
+                return '<strong>Lerntipps:</strong><br>• Aktiv lernen (schreiben, anwenden)<br>• Pomodoro (25 Min fokus)<br>• Projekte bauen<br>• Aus Fehlern lernen 📚';
+            }
+
+            return ["Das ist interessant! Erzähl mehr! 🤔", "Spannend! Kann ich helfen?", "Cool! Was möchtest du wissen?"][Math.floor(Math.random() * 3)];
+        }
+
+        function send() {
+            const m = inp.value.trim();
+            if (!m) return;
+            add(m, true);
+            inp.value = '';
+            setTimeout(() => {
+                const r = respond(m);
+                add(r, false, true);
+            }, 400);
+        }
+
+        btn.onclick = send;
+        inp.onkeypress = (e) => {
+            if (e.key === 'Enter') send();
+        };
     </script>
 </body>
 </html>
