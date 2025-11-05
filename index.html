@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -167,168 +166,165 @@
         const theme = document.getElementById('theme');
         let dark = false;
         let ctx = [];
-
-```
-    theme.onclick = () => {
-        dark = !dark;
-        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-        theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
-    };
-
-    function add(txt, user, html) {
-        const m = document.createElement('div');
-        m.className = `msg ${user ? 'user' : 'ai'}`;
-        const c = document.createElement('div');
-        c.className = 'msg-content';
-        if (html) c.innerHTML = txt;
-        else c.textContent = txt;
-        m.appendChild(c);
-        chat.appendChild(m);
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    const hello = {
-        python: 'print("Hello, World!")',
-        javascript: 'console.log("Hello, World!");',
-        java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
-        cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}',
-        c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
-        csharp: 'using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}',
-        arduino: 'void setup() {\n  Serial.begin(9600);\n  Serial.println("Hello, World!");\n}\n\nvoid loop() {\n}'
-    };
-
-    const blink = {
-        arduino: 'void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
-        python: 'import RPi.GPIO as GPIO\nimport time\n\nLED = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED, GPIO.OUT)\n\nwhile True:\n    GPIO.output(LED, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(LED, GPIO.LOW)\n    time.sleep(1)'
-    };
-
-    function respond(msg) {
-        const lq = msg.toLowerCase();
-        ctx.push(msg);
         
-        if (/^(hi|hallo|hey|guten|servus)\b/i.test(msg)) {
-            return ["Hey! 😊 Wie geht's?", "Hallo! Was kann ich für dich tun?", "Hi! 👋 Schön dich zu sehen!"][Math.floor(Math.random() * 3)];
-        }
-        
-        if (/wie geht|wie läuft/i.test(lq)) {
-            return "Mir geht's super! 😊 Und dir?";
+        theme.onclick = () => {
+            dark = !dark;
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+        };
+
+        function add(txt, user, html) {
+            const m = document.createElement('div');
+            m.className = `msg ${user ? 'user' : 'ai'}`;
+            const c = document.createElement('div');
+            c.className = 'msg-content';
+            if (html) c.innerHTML = txt;
+            else c.textContent = txt;
+            m.appendChild(c);
+            chat.appendChild(m);
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        if (/^(gut|super|toll|prima)\b/i.test(msg)) {
-            return "Das freut mich! 😊 Was möchtest du heute machen?";
-        }
+        const hello = {
+            python: 'print("Hello, World!")',
+            javascript: 'console.log("Hello, World!");',
+            java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
+            cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}',
+            c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
+            csharp: 'using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}',
+            arduino: 'void setup() {\n  Serial.begin(9600);\n  Serial.println("Hello, World!");\n}\n\nvoid loop() {\n}'
+        };
 
-        if (/schlecht|nicht gut/i.test(lq)) {
-            return "Oh nein! 😔 Möchtest du darüber reden?";
-        }
-        
-        if (/tschüss|bye|ciao/i.test(lq)) {
-            return "Tschüss! 👋 War schön mit dir zu reden!";
-        }
-        
-        if (/danke|thx/i.test(lq)) {
-            return "Gerne! 😊 Brauchst du noch was?";
-        }
+        const blink = {
+            arduino: 'void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
+            python: 'import RPi.GPIO as GPIO\nimport time\n\nLED = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED, GPIO.OUT)\n\nwhile True:\n    GPIO.output(LED, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(LED, GPIO.LOW)\n    time.sleep(1)'
+        };
 
-        if (/witz|joke/i.test(lq)) {
-            const j = ["Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄",
-                      "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄"];
-            return j[Math.floor(Math.random() * j.length)];
-        }
+        function respond(msg) {
+            const lq = msg.toLowerCase();
+            ctx.push(msg);
+            
+            if (/^(hi|hallo|hey|guten|servus)\b/i.test(msg)) {
+                return ["Hey! 😊 Wie geht's?", "Hallo! Was kann ich für dich tun?", "Hi! 👋 Schön dich zu sehen!"][Math.floor(Math.random() * 3)];
+            }
+            
+            if (/wie geht|wie läuft/i.test(lq)) {
+                return "Mir geht's super! 😊 Und dir?";
+            }
 
-        if (/hello world/i.test(lq)) {
-            for (let lang in hello) {
-                if (lq.includes(lang)) {
-                    return `<div class="info">Hello World in ${lang}</div><div class="code">${hello[lang]}</div>`;
+            if (/^(gut|super|toll|prima)\b/i.test(msg)) {
+                return "Das freut mich! 😊 Was möchtest du heute machen?";
+            }
+
+            if (/schlecht|nicht gut/i.test(lq)) {
+                return "Oh nein! 😔 Möchtest du darüber reden?";
+            }
+            
+            if (/tschüss|bye|ciao/i.test(lq)) {
+                return "Tschüss! 👋 War schön mit dir zu reden!";
+            }
+            
+            if (/danke|thx/i.test(lq)) {
+                return "Gerne! 😊 Brauchst du noch was?";
+            }
+
+            if (/witz|joke/i.test(lq)) {
+                const j = ["Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄",
+                          "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄"];
+                return j[Math.floor(Math.random() * j.length)];
+            }
+
+            if (/hello world/i.test(lq)) {
+                for (let lang in hello) {
+                    if (lq.includes(lang)) {
+                        return `<div class="info">Hello World in ${lang}</div><div class="code">${hello[lang]}</div>`;
+                    }
                 }
+                return 'In welcher Sprache? Python, JavaScript, Java, C++, C, C#, Arduino?';
             }
-            return 'In welcher Sprache? Python, JavaScript, Java, C++, C, C#, Arduino?';
-        }
 
-        if (/blink/i.test(lq)) {
-            if (lq.includes('arduino')) {
-                return `<div class="info">Arduino Blink</div><div class="code">${blink.arduino}</div>`;
+            if (/blink/i.test(lq)) {
+                if (lq.includes('arduino')) {
+                    return `<div class="info">Arduino Blink</div><div class="code">${blink.arduino}</div>`;
+                }
+                if (lq.includes('python') || lq.includes('raspberry')) {
+                    return `<div class="info">Raspberry Pi Blink</div><div class="code">${blink.python}</div>`;
+                }
+                return 'Für Arduino oder Raspberry Pi?';
             }
-            if (lq.includes('python') || lq.includes('raspberry')) {
-                return `<div class="info">Raspberry Pi Blink</div><div class="code">${blink.python}</div>`;
+            
+            if (/python/i.test(lq)) {
+                if (/machine learning|ml/i.test(lq)) {
+                    return `<div class="info">Python ML</div><div class="code">from sklearn.ensemble import RandomForestClassifier\nimport numpy as np\n\nX = np.random.rand(100, 5)\ny = np.random.randint(0, 2, 100)\n\nmodel = RandomForestClassifier()\nmodel.fit(X, y)\nprint(f"Score: {model.score(X, y)}")</div>`;
+                }
+                return `<div class="code">${hello.python}\n\n# Mehr:\ndef greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("World"))</div>`;
             }
-            return 'Für Arduino oder Raspberry Pi?';
-        }
-        
-        if (/python/i.test(lq)) {
-            if (/machine learning|ml/i.test(lq)) {
-                return `<div class="info">Python ML</div><div class="code">from sklearn.ensemble import RandomForestClassifier\nimport numpy as np\n\nX = np.random.rand(100, 5)\ny = np.random.randint(0, 2, 100)\n\nmodel = RandomForestClassifier()\nmodel.fit(X, y)\nprint(f"Score: {model.score(X, y)}")</div>`;
+            
+            if (/react/i.test(lq)) {
+                return `<div class="info">React App</div><div class="code">import { useState } from 'react';\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    &lt;div&gt;\n      &lt;p&gt;Count: {count}&lt;/p&gt;\n      &lt;button onClick={() => setCount(count + 1)}&gt;\n        +1\n      &lt;/button&gt;\n    &lt;/div&gt;\n  );\n}</div>`;
             }
-            return `<div class="code">${hello.python}\n\n# Mehr:\ndef greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("World"))</div>`;
-        }
-        
-        if (/react/i.test(lq)) {
-            return `<div class="info">React App</div><div class="code">import { useState } from 'react';\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    &lt;div&gt;\n      &lt;p&gt;Count: {count}&lt;/p&gt;\n      &lt;button onClick={() => setCount(count + 1)}&gt;\n        +1\n      &lt;/button&gt;\n    &lt;/div&gt;\n  );\n}</div>`;
-        }
-        
-        if (/quanten/i.test(lq)) {
-            return '<div class="info">Quantenphysik</div>Die Quantenphysik beschreibt die Welt auf atomarer Ebene:<br>• Welle-Teilchen-Dualismus<br>• Unschärferelation<br>• Superposition<br>• Verschränkung 🔬';
-        }
-        
-        if (/einstein|relativität/i.test(lq)) {
-            return '<div class="info">Relativitätstheorie</div><strong>Spezielle:</strong> Zeit ist relativ, E=mc²<br><strong>Allgemeine:</strong> Gravitation ist Raumzeit-Krümmung 🌌';
-        }
+            
+            if (/quanten/i.test(lq)) {
+                return '<div class="info">Quantenphysik</div>Die Quantenphysik beschreibt die Welt auf atomarer Ebene:<br>• Welle-Teilchen-Dualismus<br>• Unschärferelation<br>• Superposition<br>• Verschränkung 🔬';
+            }
+            
+            if (/einstein|relativität/i.test(lq)) {
+                return '<div class="info">Relativitätstheorie</div><strong>Spezielle:</strong> Zeit ist relativ, E=mc²<br><strong>Allgemeine:</strong> Gravitation ist Raumzeit-Krümmung 🌌';
+            }
 
-        if (/klima/i.test(lq)) {
-            return '<div class="info">Klimawandel</div>Ursachen: CO₂, Abholzung<br>Folgen: +1,1°C, Extremwetter<br>Lösungen: Erneuerbare Energien, E-Mobilität 🌍';
-        }
+            if (/klima/i.test(lq)) {
+                return '<div class="info">Klimawandel</div>Ursachen: CO₂, Abholzung<br>Folgen: +1,1°C, Extremwetter<br>Lösungen: Erneuerbare Energien, E-Mobilität 🌍';
+            }
 
-        if (/(\d+)\s*([\+\-\*\/])\s*(\d+)/.test(msg)) {
-            const m = msg.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
-            const a = parseFloat(m[1]), op = m[2], b = parseFloat(m[3]);
-            let r;
-            if (op === '+') r = a + b;
-            else if (op === '-') r = a - b;
-            else if (op === '*') r = a * b;
-            else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler';
-            return `<div class="info">${a} ${op} ${b} = <strong>${r}</strong></div>`;
-        }
+            if (/(\d+)\s*([\+\-\*\/])\s*(\d+)/.test(msg)) {
+                const m = msg.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
+                const a = parseFloat(m[1]), op = m[2], b = parseFloat(m[3]);
+                let r;
+                if (op === '+') r = a + b;
+                else if (op === '-') r = a - b;
+                else if (op === '*') r = a * b;
+                else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler';
+                return `<div class="info">${a} ${op} ${b} = <strong>${r}</strong></div>`;
+            }
 
-        if (/motivat|schwer|aufgeben/i.test(lq)) {
-            return "Du schaffst das! 💪<br>• Jeder Experte war mal Anfänger<br>• Kleine Schritte zählen<br>• Fehler sind Lerngelegenheiten 🌟";
-        }
+            if (/motivat|schwer|aufgeben/i.test(lq)) {
+                return "Du schaffst das! 💪<br>• Jeder Experte war mal Anfänger<br>• Kleine Schritte zählen<br>• Fehler sind Lerngelegenheiten 🌟";
+            }
 
-        if (/traurig|schlecht|down/i.test(lq)) {
-            return "Es tut mir leid! 😔 Ich bin hier für dich. Möchtest du darüber reden?";
-        }
+            if (/traurig|schlecht|down/i.test(lq)) {
+                return "Es tut mir leid! 😔 Ich bin hier für dich. Möchtest du darüber reden?";
+            }
 
-        if (/freue|glücklich/i.test(lq) && !/geht/.test(lq)) {
-            return "Das freut mich für dich! 🎉 Was macht dich glücklich?";
-        }
+            if (/freue|glücklich/i.test(lq) && !/geht/.test(lq)) {
+                return "Das freut mich für dich! 🎉 Was macht dich glücklich?";
+            }
 
-        if (/programmieren lernen|coden lernen/i.test(lq)) {
-            return '<div class="info">Programmieren lernen</div><strong>Start:</strong> Python 🐍<br><strong>Schritte:</strong><br>1. Grundlagen (Variablen, Schleifen)<br>2. Funktionen & OOP<br>3. Kleine Projekte bauen<br>4. Web oder ML wählen 💻';
-        }
+            if (/programmieren lernen|coden lernen/i.test(lq)) {
+                return '<div class="info">Programmieren lernen</div><strong>Start:</strong> Python 🐍<br><strong>Schritte:</strong><br>1. Grundlagen (Variablen, Schleifen)<br>2. Funktionen & OOP<br>3. Kleine Projekte bauen<br>4. Web oder ML wählen 💻';
+            }
 
-        if (/wie lerne ich/i.test(lq)) {
-            return '<strong>Lerntipps:</strong><br>• Aktiv lernen (schreiben, anwenden)<br>• Pomodoro (25 Min fokus)<br>• Projekte bauen<br>• Aus Fehlern lernen 📚';
+            if (/wie lerne ich/i.test(lq)) {
+                return '<strong>Lerntipps:</strong><br>• Aktiv lernen (schreiben, anwenden)<br>• Pomodoro (25 Min fokus)<br>• Projekte bauen<br>• Aus Fehlern lernen 📚';
+            }
+
+            return ["Das ist interessant! Erzähl mehr! 🤔", "Spannend! Kann ich helfen?", "Cool! Was möchtest du wissen?"][Math.floor(Math.random() * 3)];
         }
 
-        return ["Das ist interessant! Erzähl mehr! 🤔", "Spannend! Kann ich helfen?", "Cool! Was möchtest du wissen?"][Math.floor(Math.random() * 3)];
-    }
+        function send() {
+            const m = inp.value.trim();
+            if (!m) return;
+            add(m, true);
+            inp.value = '';
+            setTimeout(() => {
+                const r = respond(m);
+                add(r, false, true);
+            }, 400);
+        }
 
-    function send() {
-        const m = inp.value.trim();
-        if (!m) return;
-        add(m, true);
-        inp.value = '';
-        setTimeout(() => {
-            const r = respond(m);
-            add(r, false, true);
-        }, 400);
-    }
-
-    btn.onclick = send;
-    inp.onkeypress = (e) => {
-        if (e.key === 'Enter') send();
-    };
-</script>
-```
-
+        btn.onclick = send;
+        inp.onkeypress = (e) => {
+            if (e.key === 'Enter') send();
+        };
+    </script>
 </body>
 </html>
