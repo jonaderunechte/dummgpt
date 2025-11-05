@@ -1,209 +1,334 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dumme KI — Chat</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#ff6b6b;--muted:#94a3b8;--glass: rgba(255,255,255,0.03)}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg),#071024);color:#e6eef8}
-    .app{max-width:900px;margin:32px auto;padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 6px 30px rgba(2,6,23,.6)}
-    header{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:22px}
-    h1{margin:0;font-size:20px}
-    p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
-
-    .controls{display:flex;gap:12px;margin-top:18px;align-items:center}
-    .slider{display:flex;align-items:center;gap:8px}
-    input[type=range]{accent-color:var(--accent)}
-
-    .chat{margin-top:18px;border-radius:10px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));min-height:380px;max-height:60vh;overflow:auto}
-    .msg{display:flex;margin:10px 0;gap:12px}
-    .bubble{max-width:78%;padding:10px 12px;border-radius:10px;background:var(--card);box-shadow:inset 0 -1px 0 rgba(255,255,255,0.02);font-size:14px}
-    .user{justify-content:flex-end}
-    .user .bubble{background:linear-gradient(90deg,#0b1220,#081424);border:1px solid rgba(255,255,255,0.02)}
-    .meta{font-size:12px;color:var(--muted);margin-top:4px}
-
-    .composer{display:flex;gap:8px;margin-top:14px}
-    textarea{flex:1;min-height:48px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;resize:vertical}
-    button{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#ff8a6b);color:#06202a;font-weight:700;cursor:pointer}
-    .muted{color:var(--muted);font-size:13px}
-
-    .footer{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
-    .download{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
-
-    @media (max-width:600px){.app{margin:12px;padding:14px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Assistentin</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --bg2: #f8f9fa;
+            --grad1: #667eea;
+            --grad2: #764ba2;
+            --text: #212529;
+            --border: #e9ecef;
+            --user: #667eea;
+            --ai: #f1f3f5;
+        }
+        [data-theme="dark"] {
+            --bg: #1a1a1a;
+            --bg2: #2d2d2d;
+            --text: #e2e8f0;
+            --border: #4a5568;
+            --user: #4c51bf;
+            --ai: #2d3748;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: var(--bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 24px; }
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+        .chat {
+            height: 450px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--bg);
+        }
+        .msg {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg.user { flex-direction: row-reverse; }
+        .msg-content {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            line-height: 1.4;
+            color: var(--text);
+            font-size: 14px;
+        }
+        .msg.user .msg-content {
+            background: var(--user);
+            color: white;
+        }
+        .msg.ai .msg-content {
+            background: var(--ai);
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .info {
+            background: var(--bg2);
+            border-left: 3px solid var(--user);
+            padding: 8px;
+            margin: 6px 0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .input-box {
+            display: flex;
+            padding: 15px;
+            gap: 8px;
+            border-top: 2px solid var(--border);
+            background: var(--bg);
+        }
+        #inp {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            background: var(--bg);
+            color: var(--text);
+        }
+        #btn {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--grad1), var(--grad2));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Dumme KI Chat">
-    <header>
-      <div class="logo">DK</div>
-      <div>
-        <h1>Dumme KI — Chat</h1>
-        <p class="lead">Frage die KI. Die KI gibt bewusst dumme, alberne oder unsinnige Antworten — rein zu Unterhaltungszwecken.</p>
-      </div>
-    </header>
-
-    <div class="controls">
-      <div class="slider">
-        <label for="stupidRange" class="muted">Dummheitsgrad</label>
-        <input id="stupidRange" type="range" min="1" max="10" value="7" aria-label="Dummheitsgrad">
-      </div>
-      <div class="muted">Antwort-Modus:</div>
-      <select id="modeSelect" aria-label="Antwortmodus">
-        <option value="random">Zufällig</option>
-        <option value="one-liner">One-Liner</option>
-        <option value="rant">Langer Unsinn</option>
-        <option value="poem">Kurzes Gedicht</option>
-      </select>
-      <button id="clearBtn" class="download">Chat leeren</button>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>🤖 KI Assistentin</h1>
+                <p style="font-size: 12px; opacity: 0.9">Intelligente Konversations-KI</p>
+            </div>
+            <button class="theme-btn" id="theme">🌙 Dark</button>
+        </div>
+        <div class="chat" id="chat">
+            <div class="msg ai">
+                <div class="msg-content">
+                    Hallo! 👋 Ich kann mit dir sprechen, Code schreiben und Fragen beantworten. Wie kann ich dir helfen?
+                </div>
+            </div>
+        </div>
+        <div class="input-box">
+            <input type="text" id="inp" placeholder="Schreib mir..." />
+            <button id="btn">Senden</button>
+        </div>
     </div>
+    <script>
+        const chat = document.getElementById('chat');
+        const inp = document.getElementById('inp');
+        const btn = document.getElementById('btn');
+        const theme = document.getElementById('theme');
+        let dark = false;
+        let ctx = [];
 
-    <div id="chat" class="chat" aria-live="polite"></div>
+```
+    theme.onclick = () => {
+        dark = !dark;
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+    };
 
-    <div class="composer">
-      <textarea id="prompt" placeholder="Schreibe eine Frage..." aria-label="Eingabe"></textarea>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button id="sendBtn">Dumme Antwort!</button>
-        <button id="surpriseBtn" class="download">Überrasche mich</button>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div class="muted">Nur zum Spaß — die KI ist absichtlich albern.</div>
-      <div>
-        <button id="downloadBtn" class="download">HTML herunterladen</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Sammlung von Wortteilen und Templates für dumme Antworten
-    const connectors = ["wie eine Kartoffel", "auf einem Einrad", "mit Marmelade", "ohne Sinn und Verstand", "unter Wasser", "im Nebel", "auf dem Mond", "wie dein Onkel Hans"]; 
-    const openings = ["Natürlich:", "Absolut klar:", "100% sicher:", "Oh ja:", "Definitiv:"];
-    const sillyPhrases = [
-      "Die Antwort ist blau.",
-      "Frag die Banane, sie weiß Bescheid.",
-      "Wenn du genau hinhörst, hörst du ein Sandwich.",
-      "Zuerst tanzt der Kühlschrank, dann die Welt.",
-      "Zähl bis unendlich — dann bist du nah dran.",
-      "Nicht alle Eier sind Eier.",
-      "Kaffee ist die richtige Lösung, immer.",
-      "Sterne mögen keine Socken."
-    ];
-
-    const chatEl = document.getElementById('chat');
-    const promptEl = document.getElementById('prompt');
-    const sendBtn = document.getElementById('sendBtn');
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const stupidRange = document.getElementById('stupidRange');
-    const modeSelect = document.getElementById('modeSelect');
-
-    // Hilfsfunktionen
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-    function userMessage(text){
-      const wrap = document.createElement('div'); wrap.className='msg user';
-      const b = document.createElement('div'); b.className='bubble'; b.textContent = text;
-      wrap.appendChild(b);
-      chatEl.appendChild(wrap);
-      chatEl.scrollTop = chatEl.scrollHeight;
+    function add(txt, user, html) {
+        const m = document.createElement('div');
+        m.className = `msg ${user ? 'user' : 'ai'}`;
+        const c = document.createElement('div');
+        c.className = 'msg-content';
+        if (html) c.innerHTML = txt;
+        else c.textContent = txt;
+        m.appendChild(c);
+        chat.appendChild(m);
+        chat.scrollTop = chat.scrollHeight;
     }
 
-    function botMessage(html){
-      const wrap = document.createElement('div'); wrap.className='msg';
-      const b = document.createElement('div'); b.className='bubble';
-      b.innerHTML = html;
-      wrap.appendChild(b);
-      const meta = document.createElement('div'); meta.className='meta'; meta.textContent = 'Dumme KI • ' + new Date().toLocaleTimeString();
-      wrap.appendChild(meta);
-      chatEl.appendChild(wrap);
-      chatEl.scrollTop = chatEl.scrollHeight;
-    }
+    const hello = {
+        python: 'print("Hello, World!")',
+        javascript: 'console.log("Hello, World!");',
+        java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
+        cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}',
+        c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
+        csharp: 'using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}',
+        arduino: 'void setup() {\n  Serial.begin(9600);\n  Serial.println("Hello, World!");\n}\n\nvoid loop() {\n}'
+    };
 
-    // Kern: Generiere dumme Antwort basierend auf Modus und Dummheitsgrad
-    function generateDumbAnswer(prompt){
-      const level = parseInt(stupidRange.value,10);
-      const mode = modeSelect.value;
-      // Basen
-      if(!prompt || prompt.trim().length===0) prompt = '...';
+    const blink = {
+        arduino: 'void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
+        python: 'import RPi.GPIO as GPIO\nimport time\n\nLED = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED, GPIO.OUT)\n\nwhile True:\n    GPIO.output(LED, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(LED, GPIO.LOW)\n    time.sleep(1)'
+    };
 
-      // Templates
-      if(mode === 'one-liner'){
-        // Kürzere, pointierte Antworten
-        let base = rand(sillyPhrases);
-        if(level > 6) base = base.split('.')[0] + '... definitiv.';
-        return `${rand(openings)} ${base} ${rand(connectors)}`;
-      }
-
-      if(mode === 'poem'){
-        const line1 = `Rosen sind rot, ${rand(['Katzen','Fische','Tassen'])} sind nett.`;
-        const line2 = `${prompt.slice(0,20)} ist wichtig, aber ${rand(['Bananen','Socken','Kekse'])} regeln das.`;
-        const line3 = `Ende.`;
-        return `${line1}\n${line2}\n${line3}`;
-      }
-
-      if(mode === 'rant'){
-        // Langer, schwadronierender Unsinn, abhängig von level
-        const parts = [];
-        const count = Math.min(6, 2 + Math.floor(level/2));
-        for(let i=0;i<count;i++){
-          parts.push(rand(sillyPhrases) + ' ' + rand(connectors));
+    function respond(msg) {
+        const lq = msg.toLowerCase();
+        ctx.push(msg);
+        
+        if (/^(hi|hallo|hey|guten|servus)\b/i.test(msg)) {
+            return ["Hey! 😊 Wie geht's?", "Hallo! Was kann ich für dich tun?", "Hi! 👋 Schön dich zu sehen!"][Math.floor(Math.random() * 3)];
         }
-        return `${rand(openings)} ${parts.join(' — ')} (Vertrauenswürdigkeit: ${Math.max(1, 11-level)}/10)`;
-      }
+        
+        if (/wie geht|wie läuft/i.test(lq)) {
+            return "Mir geht's super! 😊 Und dir?";
+        }
 
-      // Default: random mix
-      if(Math.random() < 0.5 + (level-5)/20){
-        // kombiniere Fragmente
-        return `${rand(openings)} ${rand(sillyPhrases)} ${rand(connectors)} <small class="muted">(Antwort basiert auf intensiver Ignoranz)</small>`;
-      } else {
-        return `${rand(sillyPhrases)} ${rand(connectors)} ${rand(['😀','🤷‍♂️','🦉','🍕'])}`;
-      }
+        if (/^(gut|super|toll|prima)\b/i.test(msg)) {
+            return "Das freut mich! 😊 Was möchtest du heute machen?";
+        }
+
+        if (/schlecht|nicht gut/i.test(lq)) {
+            return "Oh nein! 😔 Möchtest du darüber reden?";
+        }
+        
+        if (/tschüss|bye|ciao/i.test(lq)) {
+            return "Tschüss! 👋 War schön mit dir zu reden!";
+        }
+        
+        if (/danke|thx/i.test(lq)) {
+            return "Gerne! 😊 Brauchst du noch was?";
+        }
+
+        if (/witz|joke/i.test(lq)) {
+            const j = ["Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄",
+                      "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄"];
+            return j[Math.floor(Math.random() * j.length)];
+        }
+
+        if (/hello world/i.test(lq)) {
+            for (let lang in hello) {
+                if (lq.includes(lang)) {
+                    return `<div class="info">Hello World in ${lang}</div><div class="code">${hello[lang]}</div>`;
+                }
+            }
+            return 'In welcher Sprache? Python, JavaScript, Java, C++, C, C#, Arduino?';
+        }
+
+        if (/blink/i.test(lq)) {
+            if (lq.includes('arduino')) {
+                return `<div class="info">Arduino Blink</div><div class="code">${blink.arduino}</div>`;
+            }
+            if (lq.includes('python') || lq.includes('raspberry')) {
+                return `<div class="info">Raspberry Pi Blink</div><div class="code">${blink.python}</div>`;
+            }
+            return 'Für Arduino oder Raspberry Pi?';
+        }
+        
+        if (/python/i.test(lq)) {
+            if (/machine learning|ml/i.test(lq)) {
+                return `<div class="info">Python ML</div><div class="code">from sklearn.ensemble import RandomForestClassifier\nimport numpy as np\n\nX = np.random.rand(100, 5)\ny = np.random.randint(0, 2, 100)\n\nmodel = RandomForestClassifier()\nmodel.fit(X, y)\nprint(f"Score: {model.score(X, y)}")</div>`;
+            }
+            return `<div class="code">${hello.python}\n\n# Mehr:\ndef greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("World"))</div>`;
+        }
+        
+        if (/react/i.test(lq)) {
+            return `<div class="info">React App</div><div class="code">import { useState } from 'react';\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    &lt;div&gt;\n      &lt;p&gt;Count: {count}&lt;/p&gt;\n      &lt;button onClick={() => setCount(count + 1)}&gt;\n        +1\n      &lt;/button&gt;\n    &lt;/div&gt;\n  );\n}</div>`;
+        }
+        
+        if (/quanten/i.test(lq)) {
+            return '<div class="info">Quantenphysik</div>Die Quantenphysik beschreibt die Welt auf atomarer Ebene:<br>• Welle-Teilchen-Dualismus<br>• Unschärferelation<br>• Superposition<br>• Verschränkung 🔬';
+        }
+        
+        if (/einstein|relativität/i.test(lq)) {
+            return '<div class="info">Relativitätstheorie</div><strong>Spezielle:</strong> Zeit ist relativ, E=mc²<br><strong>Allgemeine:</strong> Gravitation ist Raumzeit-Krümmung 🌌';
+        }
+
+        if (/klima/i.test(lq)) {
+            return '<div class="info">Klimawandel</div>Ursachen: CO₂, Abholzung<br>Folgen: +1,1°C, Extremwetter<br>Lösungen: Erneuerbare Energien, E-Mobilität 🌍';
+        }
+
+        if (/(\d+)\s*([\+\-\*\/])\s*(\d+)/.test(msg)) {
+            const m = msg.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
+            const a = parseFloat(m[1]), op = m[2], b = parseFloat(m[3]);
+            let r;
+            if (op === '+') r = a + b;
+            else if (op === '-') r = a - b;
+            else if (op === '*') r = a * b;
+            else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler';
+            return `<div class="info">${a} ${op} ${b} = <strong>${r}</strong></div>`;
+        }
+
+        if (/motivat|schwer|aufgeben/i.test(lq)) {
+            return "Du schaffst das! 💪<br>• Jeder Experte war mal Anfänger<br>• Kleine Schritte zählen<br>• Fehler sind Lerngelegenheiten 🌟";
+        }
+
+        if (/traurig|schlecht|down/i.test(lq)) {
+            return "Es tut mir leid! 😔 Ich bin hier für dich. Möchtest du darüber reden?";
+        }
+
+        if (/freue|glücklich/i.test(lq) && !/geht/.test(lq)) {
+            return "Das freut mich für dich! 🎉 Was macht dich glücklich?";
+        }
+
+        if (/programmieren lernen|coden lernen/i.test(lq)) {
+            return '<div class="info">Programmieren lernen</div><strong>Start:</strong> Python 🐍<br><strong>Schritte:</strong><br>1. Grundlagen (Variablen, Schleifen)<br>2. Funktionen & OOP<br>3. Kleine Projekte bauen<br>4. Web oder ML wählen 💻';
+        }
+
+        if (/wie lerne ich/i.test(lq)) {
+            return '<strong>Lerntipps:</strong><br>• Aktiv lernen (schreiben, anwenden)<br>• Pomodoro (25 Min fokus)<br>• Projekte bauen<br>• Aus Fehlern lernen 📚';
+        }
+
+        return ["Das ist interessant! Erzähl mehr! 🤔", "Spannend! Kann ich helfen?", "Cool! Was möchtest du wissen?"][Math.floor(Math.random() * 3)];
     }
 
-    function send(){
-      const text = promptEl.value;
-      userMessage(text || '(leere Frage)');
-      // kleine Verzögerung, damit es wie "denken" wirkt
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Überlege...';
-      setTimeout(()=>{
-        const raw = generateDumbAnswer(text);
-        // Ersetze Zeilenumbrüche durch <br>
-        botMessage(raw.replace(/\n/g,'<br>'));
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Dumme Antwort!';
-      }, 600 + Math.random()*900);
-      promptEl.value = '';
+    function send() {
+        const m = inp.value.trim();
+        if (!m) return;
+        add(m, true);
+        inp.value = '';
+        setTimeout(() => {
+            const r = respond(m);
+            add(r, false, true);
+        }, 400);
     }
 
-    sendBtn.addEventListener('click', send);
-    promptEl.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
-    surpriseBtn.addEventListener('click', ()=>{
-      // generiere zufällige Nonsens-Eingabe
-      const sillyPrompts = ['Was passiert wenn...', 'Warum ist die Farbe...', 'Erzähl mir was über mein Hamster'];
-      promptEl.value = rand(sillyPrompts);
-      send();
-    });
+    btn.onclick = send;
+    inp.onkeypress = (e) => {
+        if (e.key === 'Enter') send();
+    };
+</script>
+```
 
-    clearBtn.addEventListener('click', ()=>{ chatEl.innerHTML=''; promptEl.focus(); });
-
-    // Download HTML: erzeugt das aktuelle HTML-Dokument als Datei
-    downloadBtn.addEventListener('click', ()=>{
-      const doc = '<!doctype html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([doc], {type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'dumme-ki-chat.html'; document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-    });
-
-    // Füge eine nette Startnachricht hinzu
-    botMessage('Hallo! Ich bin die <strong>Dumme KI</strong>. Stelle mir eine Frage — ich werde mit Absicht albern oder unsinnig antworten.');
-  </script>
 </body>
 </html>
