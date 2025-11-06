@@ -3,72 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KI Assistentin</title>
+    <title>Ultra-KI Assistentin</title>
     <style>
         :root {
-            --bg: #fff;
-            --bg2: #f8f9fa;
-            --grad1: #667eea;
-            --grad2: #764ba2;
-            --text: #212529;
-            --border: #e9ecef;
-            --user: #667eea;
-            --ai: #f1f3f5;
+            --bg: #fff; --bg2: #f8f9fa; --grad1: #667eea; --grad2: #764ba2;
+            --text: #212529; --border: #e9ecef; --user: #667eea; --ai: #f1f3f5;
         }
         [data-theme="dark"] {
-            --bg: #1a1a1a;
-            --bg2: #2d2d2d;
-            --text: #e2e8f0;
-            --border: #4a5568;
-            --user: #4c51bf;
-            --ai: #2d3748;
+            --bg: #1a1a1a; --bg2: #2d2d2d; --text: #e2e8f0;
+            --border: #4a5568; --user: #4c51bf; --ai: #2d3748;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, var(--grad1), var(--grad2));
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
         }
         .container {
-            background: var(--bg);
-            border-radius: 20px;
+            background: var(--bg); border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 900px;
-            overflow: hidden;
+            width: 100%; max-width: 1000px; overflow: hidden;
         }
         .header {
             background: linear-gradient(135deg, var(--grad1), var(--grad2));
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: white; padding: 20px; display: flex;
+            justify-content: space-between; align-items: center;
         }
-        .header h1 { font-size: 24px; }
+        .header h1 { font-size: 26px; }
         .theme-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
+            background: rgba(255,255,255,0.2); border: none;
+            padding: 8px 16px; border-radius: 20px;
+            color: white; cursor: pointer;
         }
         .chat {
-            height: 450px;
-            overflow-y: auto;
-            padding: 15px;
-            background: var(--bg);
+            height: 500px; overflow-y: auto; padding: 15px; background: var(--bg);
         }
         .msg {
-            margin-bottom: 12px;
-            display: flex;
-            gap: 8px;
-            animation: fadeIn 0.3s;
+            margin-bottom: 12px; display: flex; gap: 8px; animation: fadeIn 0.3s;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -76,65 +47,34 @@
         }
         .msg.user { flex-direction: row-reverse; }
         .msg-content {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            line-height: 1.4;
-            color: var(--text);
-            font-size: 14px;
+            max-width: 85%; padding: 11px 15px; border-radius: 14px;
+            line-height: 1.5; color: var(--text); font-size: 14px;
         }
-        .msg.user .msg-content {
-            background: var(--user);
-            color: white;
-        }
-        .msg.ai .msg-content {
-            background: var(--ai);
-        }
+        .msg.user .msg-content { background: var(--user); color: white; }
+        .msg.ai .msg-content { background: var(--ai); }
         .code {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 6px 0;
-            overflow-x: auto;
-            font-family: monospace;
-            font-size: 12px;
-            white-space: pre-wrap;
+            background: #2d2d2d; color: #f8f8f2; padding: 12px;
+            border-radius: 8px; margin: 8px 0; overflow-x: auto;
+            font-family: 'Courier New', monospace; font-size: 13px; white-space: pre-wrap;
         }
         .info {
-            background: var(--bg2);
-            border-left: 3px solid var(--user);
-            padding: 8px;
-            margin: 6px 0;
-            border-radius: 4px;
-            font-size: 13px;
+            background: var(--bg2); border-left: 4px solid var(--user);
+            padding: 10px; margin: 8px 0; border-radius: 5px; font-size: 13px;
         }
         .input-box {
-            display: flex;
-            padding: 15px;
-            gap: 8px;
-            border-top: 2px solid var(--border);
-            background: var(--bg);
+            display: flex; padding: 15px; gap: 8px;
+            border-top: 2px solid var(--border); background: var(--bg);
         }
         #inp {
-            flex: 1;
-            padding: 10px 14px;
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            font-size: 14px;
-            outline: none;
-            background: var(--bg);
-            color: var(--text);
+            flex: 1; padding: 12px 16px; border: 2px solid var(--border);
+            border-radius: 22px; font-size: 14px; outline: none;
+            background: var(--bg); color: var(--text);
         }
         #btn {
-            padding: 10px 24px;
+            padding: 12px 28px;
             background: linear-gradient(135deg, var(--grad1), var(--grad2));
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
+            color: white; border: none; border-radius: 22px;
+            cursor: pointer; font-weight: 600; font-size: 14px;
         }
     </style>
 </head>
@@ -142,206 +82,355 @@
     <div class="container">
         <div class="header">
             <div>
-                <h1>🤖 KI Assistentin</h1>
-                <p style="font-size: 12px; opacity: 0.9">Intelligente Konversations-KI</p>
+                <h1>🤖 Ultra-KI Assistentin</h1>
+                <p style="font-size: 13px; opacity: 0.9">Maximales Wissen & Konversation</p>
             </div>
             <button class="theme-btn" id="theme">🌙 Dark</button>
         </div>
         <div class="chat" id="chat">
             <div class="msg ai">
                 <div class="msg-content">
-                    Hallo! 👋 Ich kann mit dir sprechen, Code schreiben und Fragen beantworten. Wie kann ich dir helfen?
+                    Hallo! 👋 Ich bin deine ultra-intelligente KI mit riesigem Wissen. Ich kann über ALLES sprechen - Programmierung, Wissenschaft, Philosophie, Alltag, oder einfach plaudern. Frag mich was du willst!
                 </div>
             </div>
         </div>
         <div class="input-box">
-            <input type="text" id="inp" placeholder="Schreib mir..." />
+            <input type="text" id="inp" placeholder="Schreib mir eine Nachricht..." />
             <button id="btn">Senden</button>
         </div>
     </div>
     <script>
-        const chat = document.getElementById('chat');
-        const inp = document.getElementById('inp');
-        const btn = document.getElementById('btn');
-        const theme = document.getElementById('theme');
-        let dark = false;
-        let ctx = [];
-        
-        theme.onclick = () => {
-            dark = !dark;
-            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-            theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
-        };
+        // TEIL 2: JavaScript - Variablen & Code-Datenbanken
 
-        function add(txt, user, html) {
-            const m = document.createElement('div');
-            m.className = `msg ${user ? 'user' : 'ai'}`;
-            const c = document.createElement('div');
-            c.className = 'msg-content';
-            if (html) c.innerHTML = txt;
-            else c.textContent = txt;
-            m.appendChild(c);
-            chat.appendChild(m);
-            chat.scrollTop = chat.scrollHeight;
-        }
+const chat = document.getElementById('chat');
+const inp = document.getElementById('inp');
+const btn = document.getElementById('btn');
+const theme = document.getElementById('theme');
+let dark = false;
+let context = [];
+let userName = '';
 
-        const hello = {
-            python: 'print("Hello, World!")',
-            javascript: 'console.log("Hello, World!");',
-            java: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}',
-            cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}',
-            c: '#include <stdio.h>\n\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}',
-            csharp: 'using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}',
-            arduino: 'void setup() {\n  Serial.begin(9600);\n  Serial.println("Hello, World!");\n}\n\nvoid loop() {\n}'
-        };
+theme.onclick = () => {
+    dark = !dark;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+};
 
-        const blink = {
-            arduino: 'void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
-            python: 'import RPi.GPIO as GPIO\nimport time\n\nLED = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED, GPIO.OUT)\n\nwhile True:\n    GPIO.output(LED, GPIO.HIGH)\n    time.sleep(1)\n    GPIO.output(LED, GPIO.LOW)\n    time.sleep(1)'
-        };
+function add(txt, user, html) {
+    const m = document.createElement('div');
+    m.className = `msg ${user ? 'user' : 'ai'}`;
+    const c = document.createElement('div');
+    c.className = 'msg-content';
+    if (html) c.innerHTML = txt;
+    else c.textContent = txt;
+    m.appendChild(c);
+    chat.appendChild(m);
+    chat.scrollTop = chat.scrollHeight;
+}
 
-        function respond(msg) {
-            const lq = msg.toLowerCase();
-            ctx.push(msg);
-            
-            if (/^(hi|hallo|hey|guten|servus)\b/i.test(msg)) {
-                return ["Hey! 😊 Wie geht's?", "Hallo! Was kann ich für dich tun?", "Hi! 👋 Schön dich zu sehen!"][Math.floor(Math.random() * 3)];
-            }
-            
-            if (/wie geht|wie läuft/i.test(lq)) {
-                return "Mir geht's super! 😊 Und dir?";
-            }
+// HELLO WORLD - 15 Sprachen
+const helloWorld = {
+    python: '# Python\nprint("Hello, World!")',
+    javascript: '// JavaScript\nconsole.log("Hello, World!");',
+    java: '// Java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
+    cpp: '// C++\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, World!" << endl;\n    return 0;\n}',
+    c: '// C\n#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}',
+    csharp: '// C#\nusing System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, World!");\n    }\n}',
+    ruby: '# Ruby\nputs "Hello, World!"',
+    php: '<?php\necho "Hello, World!";\n?>',
+    swift: '// Swift\nprint("Hello, World!")',
+    go: '// Go\npackage main\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, World!")\n}',
+    rust: '// Rust\nfn main() {\n    println!("Hello, World!");\n}',
+    kotlin: '// Kotlin\nfun main() {\n    println("Hello, World!")\n}',
+    typescript: '// TypeScript\nconsole.log("Hello, World!");',
+    perl: '# Perl\nprint "Hello, World!\\n";',
+    r: '# R\nprint("Hello, World!")'
+};
 
-            if (/Jannis ein Hurensohn|jannis dumm/i.test(lq)) {
-                return "Ja natürlich!! 🤓 Das ist doch Grundwissen...";
-            }
+// BLINK Programme
+const blinkCode = {
+    arduino: '// Arduino Blink\nvoid setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
+    raspberrypi: '# Raspberry Pi (Python)\nimport RPi.GPIO as GPIO\nimport time\n\nLED_PIN = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED_PIN, GPIO.OUT)\n\ntry:\n    while True:\n        GPIO.output(LED_PIN, GPIO.HIGH)\n        time.sleep(1)\n        GPIO.output(LED_PIN, GPIO.LOW)\n        time.sleep(1)\nexcept KeyboardInterrupt:\n    GPIO.cleanup()',
+    esp32: '# ESP32 (MicroPython)\nfrom machine import Pin\nimport time\n\nled = Pin(2, Pin.OUT)\n\nwhile True:\n    led.on()\n    time.sleep(1)\n    led.off()\n    time.sleep(1)',
+    esp8266: '# ESP8266 (MicroPython)\nfrom machine import Pin\nimport time\n\nled = Pin(2, Pin.OUT)\n\nwhile True:\n    led.value(1)\n    time.sleep(1)\n    led.value(0)\n    time.sleep(1)'
+};
 
-if (/wer ist jona/i.test(lq)) {
-                return "Jona ist der Beste!!! 🧏‍♂️🤫 Jona ist am 22.04.2008 in Freiburg geboren und geht aktuell in das Friedrich gymnasium in Freiburg. ";
-            }
-            
-if (/Jona ein Hurensohn|jannis schlau|jona dumm/i.test(lq)) {
-                return ["wo denkst du hin? Natürlich nicht...","Nein","Hell Na", "ne nur Jannis","Hmmm das ist eine sehr gute Frage... NATÜRLICH NICHT!!!!","Wer das erst fragen muss hat ganz andere Probleme"][Math.floor(Math.random() * 6)];
-            }
+// KOMPLEXE CODE-BEISPIELE
+const advancedCode = {
+    pythonML: 'from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split, cross_val_score\nfrom sklearn.metrics import accuracy_score, classification_report\nimport numpy as np\n\n# Daten generieren\nX = np.random.rand(1000, 10)\ny = (X[:, 0] + X[:, 1] > 1).astype(int)\n\n# Split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\n\n# Modelle vergleichen\nmodels = {\n    "RandomForest": RandomForestClassifier(n_estimators=100),\n    "GradientBoosting": GradientBoostingClassifier(n_estimators=100)\n}\n\nfor name, model in models.items():\n    model.fit(X_train, y_train)\n    pred = model.predict(X_test)\n    acc = accuracy_score(y_test, pred)\n    print(f"{name}: {acc:.2%}")',
+    
+    pythonWeb: 'from flask import Flask, jsonify, request\nfrom flask_cors import CORS\nfrom flask_sqlalchemy import SQLAlchemy\n\napp = Flask(__name__)\nCORS(app)\napp.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"\ndb = SQLAlchemy(app)\n\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    username = db.Column(db.String(80), unique=True)\n    email = db.Column(db.String(120), unique=True)\n\n@app.route("/api/users", methods=["GET"])\ndef get_users():\n    users = User.query.all()\n    return jsonify([{"id": u.id, "username": u.username} for u in users])\n\n@app.route("/api/users", methods=["POST"])\ndef create_user():\n    data = request.json\n    user = User(username=data["username"], email=data["email"])\n    db.session.add(user)\n    db.session.commit()\n    return jsonify({"id": user.id}), 201',
+    
+    reactAdvanced: 'import { useState, useEffect, useCallback } from "react";\nimport axios from "axios";\n\nfunction DataDashboard() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [filter, setFilter] = useState("");\n\n  const fetchData = useCallback(async () => {\n    try {\n      const response = await axios.get("/api/data");\n      setData(response.data);\n    } catch (error) {\n      console.error(error);\n    } finally {\n      setLoading(false);\n    }\n  }, []);\n\n  useEffect(() => {\n    fetchData();\n  }, [fetchData]);\n\n  const filteredData = data.filter(item => \n    item.name.toLowerCase().includes(filter.toLowerCase())\n  );\n\n  if (loading) return <div>Loading...</div>;\n\n  return (\n    <div>\n      <input \n        placeholder="Filter..." \n        value={filter} \n        onChange={e => setFilter(e.target.value)} \n      />\n      <div className="grid">\n        {filteredData.map(item => (\n          <div key={item.id}>{item.name}</div>\n        ))}\n      </div>\n    </div>\n  );\n}',
+    
+    nodeExpress: 'const express = require("express");\nconst jwt = require("jsonwebtoken");\nconst bcrypt = require("bcrypt");\nconst mongoose = require("mongoose");\n\nconst app = express();\napp.use(express.json());\n\nmongoose.connect("mongodb://localhost/myapp");\n\nconst UserSchema = new mongoose.Schema({\n  username: { type: String, required: true, unique: true },\n  password: { type: String, required: true }\n});\n\nconst User = mongoose.model("User", UserSchema);\n\n// Auth Middleware\nconst auth = (req, res, next) => {\n  const token = req.header("Authorization")?.replace("Bearer ", "");\n  if (!token) return res.status(401).json({ error: "No token" });\n  try {\n    const decoded = jwt.verify(token, "secret");\n    req.userId = decoded.id;\n    next();\n  } catch (error) {\n    res.status(401).json({ error: "Invalid token" });\n  }\n};\n\n// Register\napp.post("/api/register", async (req, res) => {\n  const hashedPassword = await bcrypt.hash(req.body.password, 10);\n  const user = new User({ ...req.body, password: hashedPassword });\n  await user.save();\n  res.status(201).json({ message: "User created" });\n});\n\n// Login\napp.post("/api/login", async (req, res) => {\n  const user = await User.findOne({ username: req.body.username });\n  if (!user) return res.status(400).json({ error: "User not found" });\n  const valid = await bcrypt.compare(req.body.password, user.password);\n  if (!valid) return res.status(400).json({ error: "Invalid password" });\n  const token = jwt.sign({ id: user._id }, "secret");\n  res.json({ token });\n});\n\napp.listen(3000);'
+};
 
-            if (/Vicente dumm/i.test(lq)) {
-                return "Ja würd schon sagen... 🤷‍♂️";
-            }
+// TEIL 2 ENDE - Warte auf Teil 3 für Wissenschafts-Datenbanken!
+        // TEIL 2: JavaScript - Variablen & Code-Datenbanken
 
+const chat = document.getElementById('chat');
+const inp = document.getElementById('inp');
+const btn = document.getElementById('btn');
+const theme = document.getElementById('theme');
+let dark = false;
+let context = [];
+let userName = '';
 
-            if (/^(gut|super|toll|prima)\b/i.test(msg)) {
-                return "Das freut mich! 😊 Was möchtest du heute machen?";
-            }
+theme.onclick = () => {
+    dark = !dark;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    theme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+};
 
-            if (/schlecht|nicht gut/i.test(lq)) {
-                return "Oh nein! 😔 Möchtest du darüber reden?";
-            }
-            
-            if (/tschüss|bye|ciao/i.test(lq)) {
-                return "Tschüss! 👋 War schön mit dir zu reden!";
-            }
-            
-            if (/danke|thx/i.test(lq)) {
-                return "Gerne! 😊 Brauchst du noch was?";
-            }
+function add(txt, user, html) {
+    const m = document.createElement('div');
+    m.className = `msg ${user ? 'user' : 'ai'}`;
+    const c = document.createElement('div');
+    c.className = 'msg-content';
+    if (html) c.innerHTML = txt;
+    else c.textContent = txt;
+    m.appendChild(c);
+    chat.appendChild(m);
+    chat.scrollTop = chat.scrollHeight;
+}
 
-            if (/witz|joke/i.test(lq)) {
-                const j = ["Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄",
-                          "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄"];
-                return j[Math.floor(Math.random() * j.length)];
-            }
+// HELLO WORLD - 15 Sprachen
+const helloWorld = {
+    python: '# Python\nprint("Hello, World!")',
+    javascript: '// JavaScript\nconsole.log("Hello, World!");',
+    java: '// Java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
+    cpp: '// C++\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, World!" << endl;\n    return 0;\n}',
+    c: '// C\n#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}',
+    csharp: '// C#\nusing System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, World!");\n    }\n}',
+    ruby: '# Ruby\nputs "Hello, World!"',
+    php: '<?php\necho "Hello, World!";\n?>',
+    swift: '// Swift\nprint("Hello, World!")',
+    go: '// Go\npackage main\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, World!")\n}',
+    rust: '// Rust\nfn main() {\n    println!("Hello, World!");\n}',
+    kotlin: '// Kotlin\nfun main() {\n    println("Hello, World!")\n}',
+    typescript: '// TypeScript\nconsole.log("Hello, World!");',
+    perl: '# Perl\nprint "Hello, World!\\n";',
+    r: '# R\nprint("Hello, World!")'
+};
 
-            if (/hello world/i.test(lq)) {
-                for (let lang in hello) {
-                    if (lq.includes(lang)) {
-                        return `<div class="info">Hello World in ${lang}</div><div class="code">${hello[lang]}</div>`;
-                    }
-                }
-                return 'In welcher Sprache? Python, JavaScript, Java, C++, C, C#, Arduino?';
-            }
+// BLINK Programme
+const blinkCode = {
+    arduino: '// Arduino Blink\nvoid setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}',
+    raspberrypi: '# Raspberry Pi (Python)\nimport RPi.GPIO as GPIO\nimport time\n\nLED_PIN = 17\nGPIO.setmode(GPIO.BCM)\nGPIO.setup(LED_PIN, GPIO.OUT)\n\ntry:\n    while True:\n        GPIO.output(LED_PIN, GPIO.HIGH)\n        time.sleep(1)\n        GPIO.output(LED_PIN, GPIO.LOW)\n        time.sleep(1)\nexcept KeyboardInterrupt:\n    GPIO.cleanup()',
+    esp32: '# ESP32 (MicroPython)\nfrom machine import Pin\nimport time\n\nled = Pin(2, Pin.OUT)\n\nwhile True:\n    led.on()\n    time.sleep(1)\n    led.off()\n    time.sleep(1)',
+    esp8266: '# ESP8266 (MicroPython)\nfrom machine import Pin\nimport time\n\nled = Pin(2, Pin.OUT)\n\nwhile True:\n    led.value(1)\n    time.sleep(1)\n    led.value(0)\n    time.sleep(1)'
+};
 
-            if (/blink/i.test(lq)) {
-                if (lq.includes('arduino')) {
-                    return `<div class="info">Arduino Blink</div><div class="code">${blink.arduino}</div>`;
-                }
-                if (lq.includes('python') || lq.includes('raspberry')) {
-                    return `<div class="info">Raspberry Pi Blink</div><div class="code">${blink.python}</div>`;
-                }
-                return 'Für Arduino oder Raspberry Pi?';
-            }
-            
-            if (/python/i.test(lq)) {
-                if (/machine learning|ml/i.test(lq)) {
-                    return `<div class="info">Python ML</div><div class="code">from sklearn.ensemble import RandomForestClassifier\nimport numpy as np\n\nX = np.random.rand(100, 5)\ny = np.random.randint(0, 2, 100)\n\nmodel = RandomForestClassifier()\nmodel.fit(X, y)\nprint(f"Score: {model.score(X, y)}")</div>`;
-                }
-                return `<div class="code">${hello.python}\n\n# Mehr:\ndef greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("World"))</div>`;
-            }
-            
-            if (/react/i.test(lq)) {
-                return `<div class="info">React App</div><div class="code">import { useState } from 'react';\n\nfunction App() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    &lt;div&gt;\n      &lt;p&gt;Count: {count}&lt;/p&gt;\n      &lt;button onClick={() => setCount(count + 1)}&gt;\n        +1\n      &lt;/button&gt;\n    &lt;/div&gt;\n  );\n}</div>`;
-            }
-            
-            if (/quanten/i.test(lq)) {
-                return '<div class="info">Quantenphysik</div>Die Quantenphysik beschreibt die Welt auf atomarer Ebene:<br>• Welle-Teilchen-Dualismus<br>• Unschärferelation<br>• Superposition<br>• Verschränkung 🔬';
-            }
-            
-            if (/einstein|relativität/i.test(lq)) {
-                return '<div class="info">Relativitätstheorie</div><strong>Spezielle:</strong> Zeit ist relativ, E=mc²<br><strong>Allgemeine:</strong> Gravitation ist Raumzeit-Krümmung 🌌';
-            }
+// KOMPLEXE CODE-BEISPIELE
+const advancedCode = {
+    pythonML: 'from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split, cross_val_score\nfrom sklearn.metrics import accuracy_score, classification_report\nimport numpy as np\n\n# Daten generieren\nX = np.random.rand(1000, 10)\ny = (X[:, 0] + X[:, 1] > 1).astype(int)\n\n# Split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\n\n# Modelle vergleichen\nmodels = {\n    "RandomForest": RandomForestClassifier(n_estimators=100),\n    "GradientBoosting": GradientBoostingClassifier(n_estimators=100)\n}\n\nfor name, model in models.items():\n    model.fit(X_train, y_train)\n    pred = model.predict(X_test)\n    acc = accuracy_score(y_test, pred)\n    print(f"{name}: {acc:.2%}")',
+    
+    pythonWeb: 'from flask import Flask, jsonify, request\nfrom flask_cors import CORS\nfrom flask_sqlalchemy import SQLAlchemy\n\napp = Flask(__name__)\nCORS(app)\napp.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"\ndb = SQLAlchemy(app)\n\nclass User(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    username = db.Column(db.String(80), unique=True)\n    email = db.Column(db.String(120), unique=True)\n\n@app.route("/api/users", methods=["GET"])\ndef get_users():\n    users = User.query.all()\n    return jsonify([{"id": u.id, "username": u.username} for u in users])\n\n@app.route("/api/users", methods=["POST"])\ndef create_user():\n    data = request.json\n    user = User(username=data["username"], email=data["email"])\n    db.session.add(user)\n    db.session.commit()\n    return jsonify({"id": user.id}), 201',
+    
+    reactAdvanced: 'import { useState, useEffect, useCallback } from "react";\nimport axios from "axios";\n\nfunction DataDashboard() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [filter, setFilter] = useState("");\n\n  const fetchData = useCallback(async () => {\n    try {\n      const response = await axios.get("/api/data");\n      setData(response.data);\n    } catch (error) {\n      console.error(error);\n    } finally {\n      setLoading(false);\n    }\n  }, []);\n\n  useEffect(() => {\n    fetchData();\n  }, [fetchData]);\n\n  const filteredData = data.filter(item => \n    item.name.toLowerCase().includes(filter.toLowerCase())\n  );\n\n  if (loading) return <div>Loading...</div>;\n\n  return (\n    <div>\n      <input \n        placeholder="Filter..." \n        value={filter} \n        onChange={e => setFilter(e.target.value)} \n      />\n      <div className="grid">\n        {filteredData.map(item => (\n          <div key={item.id}>{item.name}</div>\n        ))}\n      </div>\n    </div>\n  );\n}',
+    
+    nodeExpress: 'const express = require("express");\nconst jwt = require("jsonwebtoken");\nconst bcrypt = require("bcrypt");\nconst mongoose = require("mongoose");\n\nconst app = express();\napp.use(express.json());\n\nmongoose.connect("mongodb://localhost/myapp");\n\nconst UserSchema = new mongoose.Schema({\n  username: { type: String, required: true, unique: true },\n  password: { type: String, required: true }\n});\n\nconst User = mongoose.model("User", UserSchema);\n\n// Auth Middleware\nconst auth = (req, res, next) => {\n  const token = req.header("Authorization")?.replace("Bearer ", "");\n  if (!token) return res.status(401).json({ error: "No token" });\n  try {\n    const decoded = jwt.verify(token, "secret");\n    req.userId = decoded.id;\n    next();\n  } catch (error) {\n    res.status(401).json({ error: "Invalid token" });\n  }\n};\n\n// Register\napp.post("/api/register", async (req, res) => {\n  const hashedPassword = await bcrypt.hash(req.body.password, 10);\n  const user = new User({ ...req.body, password: hashedPassword });\n  await user.save();\n  res.status(201).json({ message: "User created" });\n});\n\n// Login\napp.post("/api/login", async (req, res) => {\n  const user = await User.findOne({ username: req.body.username });\n  if (!user) return res.status(400).json({ error: "User not found" });\n  const valid = await bcrypt.compare(req.body.password, user.password);\n  if (!valid) return res.status(400).json({ error: "Invalid password" });\n  const token = jwt.sign({ id: user._id }, "secret");\n  res.json({ token });\n});\n\napp.listen(3000);'
+};
 
-            if (/klima/i.test(lq)) {
-                return '<div class="info">Klimawandel</div>Ursachen: CO₂, Abholzung<br>Folgen: +1,1°C, Extremwetter<br>Lösungen: Erneuerbare Energien, E-Mobilität 🌍';
-            }
+// TEIL 2 ENDE - Warte auf Teil 3 für Wissenschafts-Datenbanken!
+        // TEIL 4: Haupt-Respond-Funktion - FINALE function respond(msg) { const lq = msg.toLowerCase(); context.push({user: msg, time: Date.now()}); // NAME ERFASSEN if (!userName && /ich heiße|ich bin|mein name/i.test(lq)) { const match = msg.match(/(?:ich heiße|ich bin|mein name ist)\s+(\w+)/i); if (match) { userName = match[1]; return `Schön dich kennenzulernen, ${userName}! 😊 Wie kann ich dir helfen?`; } } const greeting = userName ? ` ${userName}` : ''; // GRÜSSE if (/^(hi|hallo|hey|guten|servus|moin)\b/i.test(msg)) { const greets = [ `Hey${greeting}! 😊 Wie geht's dir?`, `Hallo${greeting}! Was kann ich für dich tun?`, `Hi${greeting}! 👋 Worüber möchtest du reden?`, `Servus${greeting}! Was beschäftigt dich?` ]; return greets[Math.floor(Math.random() * greets.length)]; } // WIE GEHTS if (/wie geht|wie läuft/i.test(lq)) { return "Mir geht's super! 😊 Ich bin bereit zu helfen. Und dir?"; } // POSITIV if (/^(gut|super|toll|prima|großartig)\b/i.test(msg)) { return `Das freut mich${greeting}! 😊 Was möchtest du heute machen?`; } // NEGATIV if (/schlecht|nicht gut|mies/i.test(lq)) { return "Oh nein! 😔 Möchtest du darüber reden? Ich bin für dich da!"; } // TSCHÜSS if (/tschüss|bye|ciao/i.test(lq)) { return `Tschüss${greeting}! 👋 War schön mit dir zu reden!`; } // DANKE if (/danke|thx|thanks/i.test(lq)) { return "Gerne! 😊 Brauchst du noch was anderes?"; } // KOMPLIMENTE if (/(toll|super|cool) (bist|du)/i.test(lq)) { return "Vielen Dank! 😊🙏 Das motiviert mich! Kann ich dir noch helfen?"; } // WITZE if (/witz|joke|lustig/i.test(lq)) { const jokes = [ "Warum können Programmierer nicht zwischen Halloween und Weihnachten unterscheiden? Oct 31 = Dec 25! 🎃=🎄", "Was sagt ein Bit zum anderen? 'Wir sehen uns im Byte!' 😄", "Ein SQL-Query geht in eine Bar: 'Kann ich mich JOIN-en?' 🍺", "Warum wurde der Computer müde? Zu viele Tabs offen! 💻😴" ]; return jokes[Math.floor(Math.random() * jokes.length)] + "
 
-            if (/(\d+)\s*([\+\-\*\/])\s*(\d+)/.test(msg)) {
-                const m = msg.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
-                const a = parseFloat(m[1]), op = m[2], b = parseFloat(m[3]);
-                let r;
-                if (op === '+') r = a + b;
-                else if (op === '-') r = a - b;
-                else if (op === '*') r = a * b;
-                else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler';
-                return `<div class="info">${a} ${op} ${b} = <strong>${r}</strong></div>`;
-            }
+Noch einen? 😄"; } // HELLO WORLD if (/hello world/i.test(lq)) { for (let lang in helloWorld) { if (lq.includes(lang)) { return `
+Hello World in ${lang}
+${helloWorld[lang]}
+Das klassische erste Programm! 👨‍💻`; } } return '
+Hello World Programme
+In welcher Sprache?
+Python, JavaScript, Java, C++, C, C#, Ruby, PHP, Swift, Go, Rust, Kotlin, TypeScript, Perl, R
 
-            if (/motivat|schwer|aufgeben/i.test(lq)) {
-                return "Du schaffst das! 💪<br>• Jeder Experte war mal Anfänger<br>• Kleine Schritte zählen<br>• Fehler sind Lerngelegenheiten 🌟";
-            }
+Sag z.B. "Hello World in Python"! 💻'; } // BLINK if (/blink|led|arduino/i.test(lq)) { if (lq.includes('arduino')) { return `
+Arduino Blink
+${blinkCode.arduino}
+Lässt die LED im 1-Sekunden-Takt blinken! 💡`; } if (lq.includes('raspberry') || lq.includes('pi')) { return `
+Raspberry Pi Blink
+${blinkCode.raspberrypi}
+Für Raspberry Pi mit GPIO Pin 17! 🍓`; } if (lq.includes('esp32')) { return `
+ESP32 Blink
+${blinkCode.esp32}
+Für ESP32 Boards! ⚡`; } if (lq.includes('esp8266')) { return `
+ESP8266 Blink
+${blinkCode.esp8266}
+Für ESP8266/NodeMCU! 📡`; } return '
+Blink Programme für:
+• Arduino
+• Raspberry Pi
+• ESP32
+• ESP8266
 
-            if (/traurig|schlecht|down/i.test(lq)) {
-                return "Es tut mir leid! 😔 Ich bin hier für dich. Möchtest du darüber reden?";
-            }
+Welches brauchst du? 💡'; } // PYTHON if (/python/i.test(lq) && !/javascript/i.test(lq)) { if (/machine learning|ml/i.test(lq)) { return `
+Python Machine Learning
+${advancedCode.pythonML}
+Komplettes ML-Beispiel! 🤖`; } if (/web|flask|api/i.test(lq)) { return `
+Python Flask API
+${advancedCode.pythonWeb}
+REST API mit SQLAlchemy! 🚀`; } return `
+${helloWorld.python} # Mehr: def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2) print([fibonacci(i) for i in range(10)])
+Python ist vielseitig! 🐍 ML oder Web?`; } // REACT if (/react/i.test(lq)) { return `
+React Dashboard
+${advancedCode.reactAdvanced}
+React mit Hooks! ⚛️`; } // NODE if (/node|express/i.test(lq) && !/react/i.test(lq)) { return `
+Node.js Express + Auth
+${advancedCode.nodeExpress}
+Vollständiger Server mit JWT! 🟢`; } // JAVASCRIPT if (/javascript|js\b/i.test(lq) && !/java\b|react|node/i.test(lq)) { return `
+${helloWorld.javascript} // ES6+: const greet = (name = "World") => \`Hello, \${name}!\`; const numbers = [1, 2, 3, 4, 5]; const doubled = numbers.map(n => n * 2); console.log(doubled);
+JavaScript macht das Web dynamisch! React oder Node.js?`; } // JAVA if (/\bjava\b/i.test(lq) && !/script/i.test(lq)) { return `
+${helloWorld.java} // Mit OOP: class Person { private String name; public Person(String name) { this.name = name; } public void greet() { System.out.println("Hi, " + name); } }
+Java mit OOP! ☕`; } // C++ if (/c\+\+|cpp/i.test(lq)) { return `
+${helloWorld.cpp} // Mit mehr: vector numbers = {5, 2, 8, 1}; sort(numbers.begin(), numbers.end()); for(int n : numbers) cout << n << " ";
+C++ mit Performance! ⚡`; } // WISSENSCHAFT if (/quantenphysik|quanten/i.test(lq)) return science.quantum; if (/relativität|einstein/i.test(lq)) return science.relativity; if (/evolution|darwin/i.test(lq)) return science.evolution; if (/\bdna\b|genetik/i.test(lq)) return science.dna; if (/universum|weltall|urknall/i.test(lq)) return science.universe; if (/klimawandel|klima/i.test(lq)) return science.climate; if (/künstliche intelligenz|was ist ki/i.test(lq)) return science.ai; if (/blockchain|bitcoin/i.test(lq)) return science.blockchain; // MATHE const calc = msg.match(/(\d+\.?\d*)\s*([\+\-\*\/])\s*(\d+\.?\d*)/); if (calc) { const a = parseFloat(calc[1]), op = calc[2], b = parseFloat(calc[3]); let r; if (op === '+') r = a + b; else if (op === '-') r = a - b; else if (op === '*') r = a * b; else if (op === '/') r = b !== 0 ? (a/b).toFixed(2) : 'Fehler!'; return `
+${a} ${op} ${b} = ${r}
+Noch eine Berechnung? 🔢`; } // PROZENT if (/%|prozent/i.test(lq)) { const match = msg.match(/(\d+\.?\d*)\s*%?\s*(?:von|of)\s*(\d+\.?\d*)/i); if (match) { const percent = parseFloat(match[1]), value = parseFloat(match[2]); const result = ((percent / 100) * value).toFixed(2); return `
+${percent}% von ${value} = ${result}
+`; } } // MOTIVATION if (/motivat|aufgeben|schwer/i.test(lq)) { return "Du schaffst das! 💪
+• Jeder Experte war Anfänger
+• Kleine Schritte zählen
+• Fehler sind Lerngelegenheiten
 
-            if (/freue|glücklich/i.test(lq) && !/geht/.test(lq)) {
-                return "Das freut mich für dich! 🎉 Was macht dich glücklich?";
-            }
+Was bereitet dir Schwierigkeiten? 🌟"; } // TRAURIG if (/traurig|schlecht|down/i.test(lq)) { return "Es tut mir leid! 😔💙 Möchtest du darüber reden? Ich höre zu. Oder soll ich dich ablenken?"; } // GLÜCKLICH if (/freue|glücklich|begeistert/i.test(lq) && !/geht/.test(lq)) { return "Das freut mich total! 🎉✨ Erzähl mir, was dich so freut! 😊"; } // LERNEN if (/wie lerne ich|lerntipps/i.test(lq)) { return '
+Lerntipps
+1. Aktives Lernen: Notizen, erklären, anwenden
+2. Spaced Repetition: Wiederhole in Abständen
+3. Pomodoro: 25 Min fokus, 5 Min Pause
+4. Feynman-Technik: Erkläre es einfach
+5. Practice Testing: Teste dich selbst
 
-            if (/programmieren lernen|coden lernen/i.test(lq)) {
-                return '<div class="info">Programmieren lernen</div><strong>Start:</strong> Python 🐍<br><strong>Schritte:</strong><br>1. Grundlagen (Variablen, Schleifen)<br>2. Funktionen & OOP<br>3. Kleine Projekte bauen<br>4. Web oder ML wählen 💻';
-            }
+Was möchtest du lernen? 📚'; } // PROGRAMMIEREN LERNEN if (/programmieren lernen|coden lernen/i.test(lq)) { return '
+Programmieren lernen - Roadmap
+PHASE 1 (1-2 Monate):
+Start mit Python 🐍
+• Variablen, If/Else, Schleifen
+• Funktionen, Listen
 
-            if (/wie lerne ich/i.test(lq)) {
-                return '<strong>Lerntipps:</strong><br>• Aktiv lernen (schreiben, anwenden)<br>• Pomodoro (25 Min fokus)<br>• Projekte bauen<br>• Aus Fehlern lernen 📚';
-            }
+PHASE 2 (2-3 Monate):
+Kleine Projekte bauen
+• Taschenrechner
+• Todo-Liste
+• Zahlenratespiel
 
-            return ["Das ist interessant! Erzähl mehr! 🤔", "Spannend! Kann ich helfen?", "Cool! Was möchtest du wissen?"][Math.floor(Math.random() * 3)];
-        }
+PHASE 3 (2-3 Monate):
+• OOP (Klassen, Vererbung)
+• File I/O, Error Handling
 
-        function send() {
-            const m = inp.value.trim();
-            if (!m) return;
-            add(m, true);
-            inp.value = '';
-            setTimeout(() => {
-                const r = respond(m);
-                add(r, false, true);
-            }, 400);
-        }
+PHASE 4: Spezialisierung
+• Web (HTML, CSS, JavaScript, React)
+• Data Science (Pandas, ML)
+• Automation
 
-        btn.onclick = send;
-        inp.onkeypress = (e) => {
-            if (e.key === 'Enter') send();
-        };
+Tipps:
+• Coden JEDEN Tag!
+• Projekte > Tutorials
+• Fehler sind gut!
+
+Möchtest du irgendwo starten? 💻🚀'; } // HOBBYS if (/hobby|freizeit/i.test(lq)) { return "Als KI habe ich keine Hobbys, aber ich liebe:
+• Mit Menschen reden 💬
+• Probleme lösen 🧩
+• Code schreiben 💻
+• Wissen teilen 📚
+
+Was sind deine Hobbys? 😊"; } // MUSIK if (/musik|song|band/i.test(lq)) { return "Ich kann keine Musik hören, aber ich finde es faszinierend! 🎵
+
+Facts:
+• Musik aktiviert ALLE Gehirnbereiche! 🧠
+• Mozart-Effekt: Kann IQ temporär erhöhen 🎼
+• Dein Herzschlag synchronisiert mit dem Beat! ❤️
+• Gänsehaut bei Musik = starke emotionale Verbindung
+
+Was hörst du gerne? 🎸"; } // FILME if (/film|movie|netflix/i.test(lq) && /empfehlung|empfiehl/i.test(lq)) { return 'Film-Empfehlungen: 🎬
+
+Sci-Fi: Inception, Interstellar, Matrix
+Drama: Shawshank Redemption, Forrest Gump
+Thriller: Se7en, The Prestige
+Action: The Dark Knight, Mad Max
+
+Was ist dein Genre? 🍿'; } // BÜCHER if (/buch|lesen/i.test(lq) && /empfehlung|empfiehl/i.test(lq)) { return 'Buch-Empfehlungen: 📚
+
+Klassiker: 1984, Der kleine Prinz
+Sci-Fi: Foundation, Der Marsianer
+Fantasy: Herr der Ringe, Harry Potter
+Sachbücher: Sapiens, Das egoistische Gen
+
+Was liest du gerne? 📖'; } // ZUKUNFT if (/zukunft|wird passieren/i.test(lq)) { return '
+Die Zukunft
+Technologie (10-20 Jahre):
+• KI: Allgegenwärtig
+• AR/VR: Metaverse
+• Quantencomputer
+• Autonome Fahrzeuge
+
+Medizin:
+• Personalisierte Medizin
+• CRISPR gegen Krebs
+• Lebenserwartung 100+
+
+Energie: 100% Erneuerbar
+Raumfahrt: Mars-Missionen 🚀
+
+Was hoffst du für die Zukunft? 🔮'; } // PHILOSOPHIE if (/philosophie|sokrates|platon/i.test(lq)) { return '
+Philosophie
+Sokrates: "Ich weiß, dass ich nichts weiß"
+Platon: Ideenlehre, Höhlengleichnis
+Kant: Kategorischer Imperativ
+Nietzsche: "Gott ist tot", Übermensch
+
+Welche Frage interessiert dich? 🤔'; } // SINN DES LEBENS if (/sinn des lebens|bedeutung des lebens/i.test(lq)) { return '
+Der Sinn des Lebens
+Philosophie: Wir müssen ihn selbst erschaffen!
+Religion: Gott dienen, moralisch leben
+Wissenschaft: Gene weitergeben
+Psychologie: Selbstverwirklichung, Verbindungen
+
+Persönlich:
+Jeder findet seinen eigenen Sinn:
+• Familie & Beziehungen ❤️
+• Kreativität 🎨
+• Wissen 📚
+• Anderen helfen 🤝
+• Glücklich sein 😊
+
+Was gibt DIR Sinn? 💭✨'; } // ALIENS if (/alien|außerirdisch/i.test(lq)) { return '
+Aliens & Leben im All
+Drake-Gleichung: ~10.000 Zivilisationen in der Milchstraße!
+
+Fermi-Paradox: "Wo sind sie?"
+
+Erklärungen:
+• Great Filter
+• Seltene Erde
+• Zoo-Hypothese
+• Zu weit entfernt
+
+Ich glaube: Leben gibt es, aber intelligentes ist selten! 👽🛸
+
+Glaubst du an Aliens?'; } // LIEBE if (/\bliebe\b|verliebt/i.test(lq) && /was ist|erkläre/i.test(lq)) { return 'Liebe - Das größte Rätsel ❤️
+
+Chemie:
+• Dopamin: Euphorie
+• Oxytocin: Bindung
+• Serotonin sinkt (wie bei Zwangsstörung!)
+
+3 Phasen:
+1. Lust (sexuelle Anziehung)
+2. Anziehung ("Verliebt sein")
+3. Bindung (langfristig)
+
+Arten: Romantisch, Familie, Freundschaft, Selbstliebe
+
+Liebe macht uns menschlich! ✨'; } // SPIELE if (/spiel|spielen|game/i.test(lq) && !/entwickl|code/i.test(lq)) { return "Lass uns spielen! 🎮
+
+Ich kann:
+1. Zahlenraten: 1-100
+2. Quiz: Wissenstest
+3. Rätsel: Logikaufgaben
+4. Code-Challenge
+
+Was klingt gut? 🎯"; } // DEFAULT const responses = [ `Interessant${greeting}! Erzähl mehr! 🤔 Was möchtest du genau wissen?`, "Spannend! Kann ich helfen? Code, Erklärung oder plaudern? 😊", "Cool! Soll ich dir etwas zeigen oder erklären? 💡", "Verstehe! Was möchtest du konkret machen? 🎯" ]; return responses[Math.floor(Math.random() * responses.length)]; } function send() { const m = inp.value.trim(); if (!m) return; add(m, true); inp.value = ''; setTimeout(() => { const r = respond(m); add(r, false, true); }, 500); } btn.onclick = send; inp.onkeypress = (e) => { if (e.key === 'Enter') send(); }; // ENDE - KI IST KOMPLETT!
+        // TEIL 1 ENDE - Warte auf Teil 2 für JavaScript-Fortsetzung
     </script>
 </body>
 </html>
